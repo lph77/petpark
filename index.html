@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Juju's Pet Park</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF6EC;
+    --peach:#FFE3D3;
+    --coral:#FF8A7A;
+    --coral-deep:#F2674F;
+    --mint:#9EE6C6;
+    --mint-deep:#4FBF93;
+    --sky:#9AD7FF;
+    --sky-deep:#4FA8E8;
+    --sun:#FFD66B;
+    --sun-deep:#F4B53D;
+    --lav:#C9B6FF;
+    --lav-deep:#9277E0;
+    --ink:#5A4A42;
+    --ink-soft:#8C7A70;
+    --white:#FFFFFF;
+    --shadow:rgba(120,80,60,.18);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Nunito',sans-serif;
+    background:
+      radial-gradient(circle at 18% 12%, #FFF1E0 0%, transparent 45%),
+      radial-gradient(circle at 85% 8%, #FFE9F0 0%, transparent 40%),
+      linear-gradient(180deg,#FFF6EC 0%, #FFE9DD 100%);
+    color:var(--ink);
+    overflow:hidden;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:manipulation;
+  }
+  #app{
+    max-width:480px;margin:0 auto;height:100dvh;
+    display:flex;flex-direction:column;position:relative;
+    overflow:hidden;
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 16px 8px;flex-shrink:0;
+  }
+  .hearts-pill{
+    display:flex;align-items:center;gap:7px;
+    background:var(--white);
+    border-radius:999px;padding:7px 16px 7px 12px;
+    box-shadow:0 4px 0 var(--shadow);
+    font-family:'Baloo 2';font-weight:800;font-size:22px;color:var(--coral-deep);
+  }
+  .hearts-pill .hp-icon{font-size:22px;transform:translateY(-1px);}
+  .top-right{display:flex;gap:8px;}
+  .icon-btn{
+    width:46px;height:46px;border:none;border-radius:16px;
+    background:var(--white);box-shadow:0 4px 0 var(--shadow);
+    font-size:22px;cursor:pointer;display:grid;place-items:center;
+    transition:transform .08s;
+  }
+  .icon-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shadow);}
+
+  /* ---------- STAGE / PET ---------- */
+  .stage{
+    flex:1;position:relative;display:flex;flex-direction:column;
+    align-items:center;justify-content:flex-start;padding:4px 16px 0;
+    min-height:0;
+  }
+  .pet-name-tag{
+    font-family:'Baloo 2';font-weight:800;font-size:24px;color:var(--ink);
+    background:var(--white);padding:4px 18px;border-radius:999px;
+    box-shadow:0 4px 0 var(--shadow);margin-bottom:2px;cursor:pointer;
+    display:flex;align-items:center;gap:7px;transition:transform .08s;
+  }
+  .pet-name-tag:active{transform:scale(.96);}
+  .rename-pencil{font-size:14px;opacity:.55;}
+  .stage-badge{
+    font-family:'Nunito';font-weight:800;font-size:12px;color:var(--white);
+    background:var(--lav-deep);padding:2px 9px;border-radius:999px;
+  }
+  .pet-yard{
+    flex:1;width:100%;display:flex;align-items:center;justify-content:center;
+    position:relative;min-height:0;
+  }
+  .pet-shadow{
+    position:absolute;bottom:14%;width:130px;height:26px;border-radius:50%;
+    background:rgba(120,80,60,.14);filter:blur(2px);
+  }
+  .pet-stack{
+    position:relative;display:flex;align-items:flex-end;justify-content:center;
+    animation:idle 2.6s ease-in-out infinite;z-index:2;
+  }
+  .pet-stack.happy{animation:happyhop .5s ease-in-out infinite;}
+  .pet-stack.welcome{animation:welcomewiggle .4s ease-in-out 4;}
+  .pet{
+    font-size:130px;cursor:pointer;line-height:1;
+    filter:drop-shadow(0 8px 6px rgba(120,80,60,.18));
+    transition:transform .1s;position:relative;z-index:2;
+  }
+  .pet:active{transform:scale(.93);}
+  .pet-hat{
+    position:absolute;left:50%;top:0;transform:translate(-50%,-32%);
+    font-size:54px;line-height:1;z-index:3;pointer-events:none;
+    filter:drop-shadow(0 3px 3px rgba(120,80,60,.22));
+  }
+  @keyframes idle{0%,100%{transform:translateY(0) rotate(-1deg) scale(1);}50%{transform:translateY(-14px) rotate(1deg) scale(1.02);}}
+  .pet.happy{animation:happyhop .5s ease-in-out infinite;}
+  @keyframes happyhop{0%,100%{transform:translateY(0) scale(1);}30%{transform:translateY(-32px) scale(1.06);}60%{transform:translateY(0) scale(.98);}}
+  .pet.welcome{animation:welcomewiggle .4s ease-in-out 4;}
+  @keyframes welcomewiggle{0%,100%{transform:rotate(0) scale(1.05);}25%{transform:rotate(-9deg) scale(1.05);}75%{transform:rotate(9deg) scale(1.05);}}
+
+  .mood-bubble{
+    position:absolute;top:6%;left:50%;transform:translateX(-50%);
+    background:var(--white);border-radius:18px;padding:8px 16px;
+    box-shadow:0 4px 0 var(--shadow);font-weight:800;font-size:16px;color:var(--ink-soft);
+    white-space:nowrap;z-index:3;opacity:0;pointer-events:none;
+    transition:opacity .3s;
+  }
+  .mood-bubble.show{opacity:1;}
+  .mood-bubble::after{content:"";position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);
+    border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid var(--white);}
+
+  /* ---------- NEED METERS ---------- */
+  .needs{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;
+    padding:6px 2px 2px;flex-shrink:0;
+  }
+  .need{display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .need-emoji{font-size:20px;}
+  .need-bar{width:100%;height:11px;border-radius:999px;background:#EFE0D5;overflow:hidden;
+    box-shadow:inset 0 1px 2px rgba(120,80,60,.18);}
+  .need-fill{height:100%;border-radius:999px;width:100%;transition:width .5s ease, background .4s;}
+
+  /* ---------- ACTION BUTTONS ---------- */
+  .actions{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+    padding:10px 16px;flex-shrink:0;
+  }
+  .act{
+    border:none;border-radius:22px;padding:14px 4px 11px;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:3px;
+    font-family:'Baloo 2';font-weight:700;font-size:14px;color:var(--white);
+    box-shadow:0 5px 0 rgba(0,0,0,.13);transition:transform .08s, box-shadow .08s;
+  }
+  .act:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.13);}
+  .act .ae{font-size:30px;line-height:1;}
+  .act.feed{background:linear-gradient(180deg,#FFB37A,var(--coral-deep));}
+  .act.play{background:linear-gradient(180deg,#7FD6FF,var(--sky-deep));}
+  .act.wash{background:linear-gradient(180deg,#B5F0D6,var(--mint-deep));}
+  .act.sleep{background:linear-gradient(180deg,#D7C6FF,var(--lav-deep));}
+  .act:disabled{opacity:.45;filter:grayscale(.3);}
+
+  /* ---------- BOTTOM NAV ---------- */
+  .bottomnav{
+    display:flex;gap:10px;padding:6px 16px 16px;flex-shrink:0;
+  }
+  .navbtn{
+    flex:1;border:none;border-radius:20px;padding:13px;cursor:pointer;
+    font-family:'Baloo 2';font-weight:800;font-size:17px;color:var(--ink);
+    background:var(--white);box-shadow:0 5px 0 var(--shadow);
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .08s, box-shadow .08s;
+  }
+  .navbtn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--shadow);}
+  .navbtn .nb-icon{font-size:22px;}
+  .navbtn.alert::after{content:"";position:absolute;}
+  .navbtn.alert{position:relative;}
+  .navbtn.alert .dot{position:absolute;top:6px;right:14px;width:14px;height:14px;
+    background:var(--coral);border-radius:50%;border:2px solid var(--white);
+    animation:pulse 1s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.3);}}
+
+  /* ---------- OVERLAYS ---------- */
+  .overlay{
+    position:absolute;inset:0;background:rgba(90,60,50,.45);
+    backdrop-filter:blur(3px);z-index:50;display:none;
+    align-items:center;justify-content:center;padding:22px;
+  }
+  .overlay.show{display:flex;animation:fadein .25s;}
+  @keyframes fadein{from{opacity:0;}to{opacity:1;}}
+  .sheet{
+    background:var(--cream);border-radius:30px;width:100%;max-width:430px;
+    max-height:88dvh;overflow-y:auto;padding:22px 20px 24px;
+    box-shadow:0 12px 40px rgba(80,50,40,.4);animation:pop .3s cubic-bezier(.2,1.4,.5,1);
+    position:relative;
+  }
+  @keyframes pop{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .sheet h2{font-family:'Baloo 2';font-weight:800;font-size:26px;text-align:center;margin-bottom:4px;}
+  .sheet .sub{text-align:center;color:var(--ink-soft);font-weight:700;margin-bottom:18px;font-size:15px;}
+  .close-x{position:absolute;top:14px;right:14px;width:38px;height:38px;border:none;
+    border-radius:50%;background:var(--peach);font-size:20px;cursor:pointer;color:var(--coral-deep);
+    box-shadow:0 3px 0 var(--shadow);font-weight:800;}
+  .close-x:active{transform:translateY(2px);}
+
+  /* collection grid */
+  .col-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .col-card{
+    background:var(--white);border-radius:20px;padding:14px 6px 10px;text-align:center;
+    box-shadow:0 4px 0 var(--shadow);position:relative;
+  }
+  .col-card .ce{font-size:46px;line-height:1;filter:drop-shadow(0 3px 3px rgba(120,80,60,.2));}
+  .col-card .cn{font-family:'Baloo 2';font-weight:700;font-size:13px;margin-top:4px;color:var(--ink);}
+  .col-card.locked .ce{filter:grayscale(1) brightness(1.6) contrast(.4);opacity:.55;}
+  .col-card.locked .cn{color:#C9B8AE;}
+  .col-card.active-pet{outline:3px solid var(--mint-deep);outline-offset:-1px;}
+  .col-card .pick{margin-top:6px;font-size:11px;font-weight:800;color:var(--mint-deep);}
+  .col-card .lvl{position:absolute;top:6px;left:8px;font-size:10px;font-weight:800;
+    background:var(--lav);color:var(--white);padding:1px 7px;border-radius:999px;}
+  .card-rename{position:absolute;top:4px;right:5px;width:24px;height:24px;border:none;
+    border-radius:50%;background:var(--peach);font-size:12px;cursor:pointer;line-height:1;
+    box-shadow:0 2px 0 var(--shadow);padding:0;}
+  .card-rename:active{transform:translateY(2px);}
+
+  /* egg shop */
+  .egg-hero{font-size:120px;text-align:center;line-height:1;margin:6px 0 4px;
+    filter:drop-shadow(0 8px 6px rgba(120,80,60,.2));animation:eggwobble 2s ease-in-out infinite;}
+  @keyframes eggwobble{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
+  .big-btn{
+    width:100%;border:none;border-radius:22px;padding:17px;margin-top:14px;cursor:pointer;
+    font-family:'Baloo 2';font-weight:800;font-size:21px;color:var(--white);
+    background:linear-gradient(180deg,#FFC25E,var(--coral-deep));
+    box-shadow:0 6px 0 #C44A35;transition:transform .08s,box-shadow .08s;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+  }
+  .big-btn:active{transform:translateY(5px);box-shadow:0 1px 0 #C44A35;}
+  .big-btn:disabled{filter:grayscale(.5);opacity:.6;}
+  .big-btn.mint{background:linear-gradient(180deg,#B5F0D6,var(--mint-deep));box-shadow:0 6px 0 #3A9B74;}
+
+  /* hatch animation */
+  .hatch-egg{font-size:130px;text-align:center;animation:hatchshake .35s ease-in-out infinite;}
+  @keyframes hatchshake{0%,100%{transform:rotate(-12deg) translateY(0);}25%{transform:rotate(12deg) translateY(-6px);}50%{transform:rotate(-10deg);}75%{transform:rotate(10deg) translateY(-4px);}}
+  .reveal-pet{font-size:140px;text-align:center;animation:revealpop .6s cubic-bezier(.2,1.6,.4,1);}
+  @keyframes revealpop{from{transform:scale(0) rotate(-30deg);}to{transform:scale(1) rotate(0);}}
+  .new-tag{display:inline-block;background:var(--sun-deep);color:var(--white);font-family:'Baloo 2';
+    font-weight:800;font-size:14px;padding:3px 14px;border-radius:999px;transform:rotate(-6deg);
+    box-shadow:0 3px 0 rgba(120,80,60,.2);}
+
+  /* daily gift */
+  .gift-box{font-size:110px;text-align:center;animation:giftbounce .8s ease-in-out infinite;}
+  @keyframes giftbounce{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-12px) scale(1.04);}}
+  .streak-row{display:flex;justify-content:center;gap:6px;margin:14px 0 4px;flex-wrap:wrap;}
+  .streak-day{width:38px;height:46px;border-radius:12px;background:var(--white);
+    box-shadow:0 3px 0 var(--shadow);display:flex;flex-direction:column;align-items:center;
+    justify-content:center;font-weight:800;font-size:11px;color:var(--ink-soft);}
+  .streak-day .sd-icon{font-size:17px;}
+  .streak-day.done{background:linear-gradient(180deg,var(--sun),var(--sun-deep));color:var(--white);}
+  .streak-day.today{outline:3px solid var(--coral);outline-offset:1px;}
+
+  /* particles */
+  .particle{position:absolute;pointer-events:none;z-index:40;font-size:28px;
+    animation:floatup 1s ease-out forwards;}
+  @keyframes floatup{0%{transform:translateY(0) scale(.5);opacity:1;}
+    100%{transform:translateY(-90px) scale(1.3);opacity:0;}}
+
+  .confetti{position:absolute;top:-20px;width:11px;height:11px;border-radius:2px;z-index:60;
+    animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(105vh) rotate(720deg);}}
+
+  /* intro */
+  #intro{position:absolute;inset:0;z-index:80;background:
+    linear-gradient(180deg,#FFE3D3,#FFD0E0);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:8px;padding:30px;text-align:center;}
+  #intro .title{font-family:'Baloo 2';font-weight:800;font-size:40px;color:var(--coral-deep);
+    line-height:1.05;text-shadow:0 4px 0 rgba(255,255,255,.6);}
+  #intro .pets-parade{font-size:54px;animation:idle 2s ease-in-out infinite;margin:6px;}
+  #intro p{font-weight:800;color:var(--ink-soft);font-size:16px;max-width:300px;}
+
+  .toast{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:var(--white);padding:10px 20px;border-radius:999px;
+    font-weight:800;font-size:15px;z-index:70;opacity:0;transition:opacity .3s,transform .3s;white-space:nowrap;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-8px);}
+
+  /* ---------- FEED MINIGAME ---------- */
+  .fg{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .fg-pet-wrap{position:relative;display:flex;flex-direction:column;align-items:center;}
+  .fg-pet{font-size:90px;line-height:1;filter:drop-shadow(0 6px 5px rgba(120,80,60,.18));
+    transition:transform .12s;}
+  .fg-pet.chomp{animation:chomp .25s;}
+  @keyframes chomp{0%,100%{transform:scale(1);}40%{transform:scale(1.15) rotate(-3deg);}70%{transform:scale(.94);}}
+  .fg-crave{position:absolute;top:-6px;right:-8px;background:var(--white);border-radius:18px;
+    padding:6px 12px;box-shadow:0 4px 0 var(--shadow);font-size:30px;line-height:1;
+    animation:cravepop .3s cubic-bezier(.2,1.6,.4,1);}
+  .fg-crave::after{content:"";position:absolute;bottom:-6px;left:14px;width:10px;height:10px;
+    background:var(--white);border-radius:50%;}
+  @keyframes cravepop{from{transform:scale(0);}to{transform:scale(1);}}
+  .fg-crave .want{font-size:12px;font-weight:800;color:var(--ink-soft);display:block;
+    text-align:center;margin-bottom:1px;}
+  .belly-bar{width:80%;height:18px;border-radius:999px;background:#EFE0D5;overflow:hidden;
+    box-shadow:inset 0 1px 3px rgba(120,80,60,.18);margin:4px 0 2px;}
+  .belly-fill{height:100%;width:0;border-radius:999px;
+    background:linear-gradient(90deg,#FFB37A,#F2674F);transition:width .35s cubic-bezier(.2,1.2,.4,1);}
+  .belly-label{font-weight:800;font-size:13px;color:var(--ink-soft);}
+  .combo-tag{font-family:'Baloo 2';font-weight:800;font-size:16px;color:var(--coral-deep);
+    height:20px;transition:transform .15s;}
+  .combo-tag.pop{transform:scale(1.4);}
+  .plate{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;margin-top:10px;}
+  .food{border:none;background:var(--white);border-radius:22px;padding:14px 0;cursor:pointer;
+    font-size:46px;line-height:1;box-shadow:0 5px 0 var(--shadow);transition:transform .08s,box-shadow .08s;}
+  .food:active{transform:translateY(4px);box-shadow:0 1px 0 var(--shadow);}
+  .food.wrong{animation:nono .35s;}
+  @keyframes nono{0%,100%{transform:translateX(0);}20%{transform:translateX(-9px) rotate(-6deg);}
+    60%{transform:translateX(9px) rotate(6deg);}}
+  .food.eaten{animation:flyup .4s forwards;}
+  @keyframes flyup{to{transform:translateY(-120px) scale(.2);opacity:0;}}
+
+  /* ---------- STYLE SHOP ---------- */
+  .preview-pet{position:relative;display:inline-flex;justify-content:center;margin:2px auto 10px;
+    font-size:96px;line-height:1;filter:drop-shadow(0 6px 5px rgba(120,80,60,.18));}
+  .preview-hat{position:absolute;left:50%;top:0;transform:translate(-50%,-30%);font-size:42px;
+    line-height:1;filter:drop-shadow(0 3px 3px rgba(120,80,60,.22));}
+  .acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .acc-card{background:var(--white);border-radius:20px;padding:12px 6px 9px;text-align:center;
+    box-shadow:0 4px 0 var(--shadow);cursor:pointer;transition:transform .08s,box-shadow .08s;position:relative;}
+  .acc-card:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shadow);}
+  .acc-card .ae{font-size:42px;line-height:1;}
+  .acc-card .an{font-family:'Baloo 2';font-weight:700;font-size:12px;margin-top:3px;color:var(--ink);}
+  .acc-card .acost{font-size:12px;font-weight:800;color:var(--coral-deep);margin-top:3px;}
+  .acc-card.owned .acost{color:var(--mint-deep);}
+  .acc-card.worn{outline:3px solid var(--mint-deep);outline-offset:-1px;}
+  .acc-card.cant{opacity:.5;}
+  .acc-card .worn-tag{font-size:11px;font-weight:800;color:var(--mint-deep);margin-top:2px;}
+  .takeoff{width:100%;border:none;border-radius:16px;padding:11px;margin-top:14px;cursor:pointer;
+    font-family:'Baloo 2';font-weight:800;font-size:15px;color:var(--ink-soft);background:var(--white);
+    box-shadow:0 4px 0 var(--shadow);}
+  .takeoff:active{transform:translateY(2px);}
+
+  /* ---------- NAMING ---------- */
+  .name-input{width:100%;border:3px solid var(--peach);border-radius:18px;padding:13px 16px;
+    font-family:'Baloo 2';font-weight:700;font-size:22px;color:var(--ink);text-align:center;
+    background:var(--white);margin:8px 0 4px;outline:none;}
+  .name-input:focus{border-color:var(--coral);}
+  .name-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0 2px;}
+  .name-chip{border:none;background:var(--white);border-radius:999px;padding:8px 16px;cursor:pointer;
+    font-family:'Baloo 2';font-weight:700;font-size:15px;color:var(--lav-deep);
+    box-shadow:0 3px 0 var(--shadow);}
+  .name-chip:active{transform:translateY(2px);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001s !important;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div class="pets-parade">🐱🐶🐰🦊🐼</div>
+    <div class="title">Juju's<br>Pet Park</div>
+    <p>Take care of your pets and collect them all!</p>
+    <button class="big-btn" id="startBtn" style="max-width:240px;margin-top:18px;">▶ Play</button>
+  </div>
+
+  <!-- TOP -->
+  <div class="topbar">
+    <div class="hearts-pill"><span class="hp-icon">💖</span><span id="heartCount">0</span></div>
+    <div class="top-right">
+      <button class="icon-btn" id="soundBtn" aria-label="sound">🔊</button>
+    </div>
+  </div>
+
+  <!-- STAGE -->
+  <div class="stage">
+    <div class="pet-name-tag" id="petNameTag"><span id="petName">Mochi</span><span class="rename-pencil">✏️</span><span class="stage-badge" id="stageBadge">Baby</span></div>
+    <div class="pet-yard" id="petYard">
+      <div class="mood-bubble" id="moodBubble"></div>
+      <div class="pet-shadow"></div>
+      <div class="pet-stack" id="petStack">
+        <span class="pet-hat" id="petHat" style="display:none;"></span>
+        <div class="pet" id="petEl">🐱</div>
+      </div>
+    </div>
+    <div class="needs">
+      <div class="need"><span class="need-emoji">🍎</span><div class="need-bar"><div class="need-fill" id="fill-hunger"></div></div></div>
+      <div class="need"><span class="need-emoji">🎾</span><div class="need-bar"><div class="need-fill" id="fill-fun"></div></div></div>
+      <div class="need"><span class="need-emoji">🛁</span><div class="need-bar"><div class="need-fill" id="fill-clean"></div></div></div>
+      <div class="need"><span class="need-emoji">😴</span><div class="need-bar"><div class="need-fill" id="fill-sleep"></div></div></div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="act feed" data-need="hunger"><span class="ae">🍎</span>Feed</button>
+    <button class="act play" data-need="fun"><span class="ae">🎾</span>Play</button>
+    <button class="act wash" data-need="clean"><span class="ae">🫧</span>Wash</button>
+    <button class="act sleep" data-need="sleep"><span class="ae">💤</span>Sleep</button>
+  </div>
+
+  <!-- NAV -->
+  <div class="bottomnav">
+    <button class="navbtn" id="collectionBtn"><span class="nb-icon">🐾</span>Pets</button>
+    <button class="navbtn" id="styleBtn"><span class="nb-icon">👒</span>Style</button>
+    <button class="navbtn" id="shopBtn"><span class="nb-icon">🥚</span>Eggs</button>
+  </div>
+
+  <!-- OVERLAYS -->
+  <div class="overlay" id="overlay">
+    <div class="sheet" id="sheet"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ============================================================
+   JUJU'S PET PARK
+   ============================================================ */
+
+const PETS = [
+  {id:'cat',     name:'Mochi',    emoji:'🐱', starter:true},
+  {id:'dog',     name:'Biscuit',  emoji:'🐶'},
+  {id:'bunny',   name:'Marshmallow', emoji:'🐰'},
+  {id:'fox',     name:'Pumpkin',  emoji:'🦊'},
+  {id:'panda',   name:'Bamboo',   emoji:'🐼'},
+  {id:'penguin', name:'Pebble',   emoji:'🐧'},
+  {id:'hamster', name:'Peanut',   emoji:'🐹'},
+  {id:'koala',   name:'Gumnut',   emoji:'🐨'},
+  {id:'chick',   name:'Sunny',    emoji:'🐥'},
+  {id:'frog',    name:'Lily',     emoji:'🐸'},
+  {id:'tiger',   name:'Stripes',  emoji:'🐯'},
+  {id:'unicorn', name:'Sparkle',  emoji:'🦄'},
+  {id:'dragon',  name:'Ember',    emoji:'🐲'},
+];
+
+const NEEDS = ['hunger','fun','clean','sleep'];
+
+const ACCESSORIES = [
+  {id:'bow',     emoji:'🎀', name:'Bow',      cost:20},
+  {id:'flower',  emoji:'🌸', name:'Flower',   cost:20},
+  {id:'sunflower',emoji:'🌻',name:'Sunflower',cost:25},
+  {id:'cap',     emoji:'🧢', name:'Cap',      cost:25},
+  {id:'sunhat',  emoji:'👒', name:'Sun Hat',  cost:28},
+  {id:'tophat',  emoji:'🎩', name:'Top Hat',  cost:30},
+  {id:'star',    emoji:'⭐', name:'Star',     cost:35},
+  {id:'butterfly',emoji:'🦋',name:'Butterfly',cost:35},
+  {id:'gradcap', emoji:'🎓', name:'Grad Cap', cost:40},
+  {id:'crown',   emoji:'👑', name:'Crown',    cost:50},
+  {id:'rainbow', emoji:'🌈', name:'Rainbow',  cost:60},
+  {id:'gem',     emoji:'💎', name:'Gem',      cost:70},
+];
+function accById(id){ return ACCESSORIES.find(a=>a.id===id); }
+
+const FILL_COLORS = {
+  hunger:'linear-gradient(90deg,#FFB37A,#F2674F)',
+  fun:'linear-gradient(90deg,#7FD6FF,#4FA8E8)',
+  clean:'linear-gradient(90deg,#B5F0D6,#4FBF93)',
+  sleep:'linear-gradient(90deg,#D7C6FF,#9277E0)'
+};
+const LOW_COLOR = 'linear-gradient(90deg,#FFB3A8,#F2674F)';
+
+const EGG_COST = 30;
+const DRAIN_PER_HOUR = 22;      // points each need drops per real hour
+const STAGE_THRESHOLDS = [0, 40, 120]; // care actions -> Baby / Kid / Grown
+
+let state = null;
+
+/* ---------- SAVE / LOAD ---------- */
+function defaultState(){
+  return {
+    hearts: 12,
+    active: 'cat',
+    owned: { cat: newPet('cat') },
+    accessories: [],      // owned accessory ids (account-wide)
+    lastSeen: Date.now(),
+    streak: 0,
+    lastGift: 0,          // day-stamp of last claimed gift
+    sound: true,
+    seenIntro: false
+  };
+}
+function newPet(id){ return { hunger:80, fun:80, clean:80, sleep:80, care:0, hat:null, customName:null }; }
+
+// pet's display name: custom if named, else default
+function petLabel(id){
+  const o = state.owned[id];
+  if(o && o.customName) return o.customName;
+  return PETS.find(p=>p.id===id).name;
+}
+
+// fill in any missing fields on older saves
+function migrate(){
+  if(!state.accessories) state.accessories = [];
+  for(const id in state.owned){
+    const o = state.owned[id];
+    if(o.hat === undefined) o.hat = null;
+    if(o.customName === undefined) o.customName = null;
+  }
+}
+
+function save(){ try{ localStorage.setItem('jujuPetPark', JSON.stringify(state)); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem('jujuPetPark');
+    if(raw){ state = JSON.parse(raw); migrate(); return true; }
+  }catch(e){}
+  state = defaultState();
+  return false;
+}
+
+/* ---------- SOUND (synth, cute) ---------- */
+let actx = null;
+function audio(){ if(!actx){ try{actx = new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return actx; }
+function blip(freqs, dur=0.12, type='sine', vol=0.18){
+  if(!state.sound) return;
+  const a = audio(); if(!a) return;
+  if(a.state==='suspended') a.resume();
+  freqs.forEach((f,i)=>{
+    const o=a.createOscillator(), g=a.createGain();
+    o.type=type; o.frequency.value=f;
+    const t=a.currentTime + i*0.06;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(vol,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.connect(g); g.connect(a.destination);
+    o.start(t); o.stop(t+dur+0.02);
+  });
+}
+const SND = {
+  feed:  ()=>blip([523,659],0.14,'triangle'),
+  fun:   ()=>blip([659,880],0.12,'square',0.12),
+  clean: ()=>blip([784,988,1175],0.13,'sine'),
+  sleep: ()=>blip([392,330],0.22,'sine'),
+  happy: ()=>blip([523,659,784,1047],0.16,'triangle'),
+  tap:   ()=>blip([440],0.08,'sine',0.1),
+  hatch: ()=>blip([523,659,784,1047,1319],0.2,'triangle',0.2),
+  gift:  ()=>blip([659,784,1047],0.18,'triangle'),
+  coin:  ()=>blip([988,1319],0.1,'square',0.1),
+  chomp: ()=>blip([330,294],0.1,'triangle',0.16),
+  nono:  ()=>blip([220,196],0.12,'sine',0.1),
+  combo: ()=>blip([784,988,1319],0.1,'square',0.13),
+};
+
+/* ---------- TIME-BASED NEED DRAIN ---------- */
+function applyDrain(){
+  const now = Date.now();
+  const hours = (now - state.lastSeen) / 3600000;
+  if(hours > 0){
+    for(const id in state.owned){
+      const p = state.owned[id];
+      const drop = hours * DRAIN_PER_HOUR;
+      NEEDS.forEach(n=>{ p[n] = Math.max(0, p[n] - drop); });
+    }
+  }
+  state.lastSeen = now;
+}
+
+/* ---------- RENDER ---------- */
+function pet(){ return PETS.find(p=>p.id===state.active); }
+function petState(){ return state.owned[state.active]; }
+function stageOf(care){
+  if(care >= STAGE_THRESHOLDS[2]) return {label:'Grown', scale:1.0};
+  if(care >= STAGE_THRESHOLDS[1]) return {label:'Kid', scale:0.85};
+  return {label:'Baby', scale:0.72};
+}
+
+function render(){
+  document.getElementById('heartCount').textContent = state.hearts;
+  const p = pet(), ps = petState();
+  document.getElementById('petName').textContent = petLabel(state.active);
+  const st = stageOf(ps.care);
+  document.getElementById('stageBadge').textContent = st.label;
+  const petEl = document.getElementById('petEl');
+  const petPx = 130*st.scale;
+  petEl.textContent = p.emoji;
+  petEl.style.fontSize = petPx+'px';
+
+  // hat / accessory on the pet
+  const hatEl = document.getElementById('petHat');
+  if(ps.hat){
+    const acc = accById(ps.hat);
+    hatEl.textContent = acc ? acc.emoji : '';
+    hatEl.style.fontSize = (petPx*0.42)+'px';
+    hatEl.style.display = '';
+  } else {
+    hatEl.style.display = 'none';
+  }
+
+  NEEDS.forEach(n=>{
+    const f = document.getElementById('fill-'+n);
+    const v = Math.round(ps[n]);
+    f.style.width = v + '%';
+    f.style.background = v < 30 ? LOW_COLOR : FILL_COLORS[n];
+  });
+
+  // happy state if all needs high
+  const allHappy = NEEDS.every(n=>ps[n] >= 70);
+  document.getElementById('petStack').classList.toggle('happy', allHappy);
+
+  // sound icon
+  document.getElementById('soundBtn').textContent = state.sound ? '🔊' : '🔇';
+
+  // gift alert dot
+  const shopBtn = document.getElementById('shopBtn');
+  shopBtn.classList.toggle('alert', state.hearts >= EGG_COST && lockedCount() > 0);
+  let dot = shopBtn.querySelector('.dot');
+  if(state.hearts >= EGG_COST && lockedCount() > 0){
+    if(!dot){ dot=document.createElement('span'); dot.className='dot'; shopBtn.appendChild(dot);}
+  } else if(dot){ dot.remove(); }
+}
+
+function lockedCount(){ return PETS.filter(p=>!state.owned[p.id]).length; }
+
+/* ---------- CARE ACTIONS ---------- */
+let moodTimer=null;
+function showMood(text){
+  const b=document.getElementById('moodBubble');
+  b.textContent=text; b.classList.add('show');
+  clearTimeout(moodTimer);
+  moodTimer=setTimeout(()=>b.classList.remove('show'),1300);
+}
+const MOODS = {
+  hunger:['Yum!','So tasty!','Nom nom!','Delicious!'],
+  fun:['Wheee!','So fun!','Again!','Yay!'],
+  clean:['So fresh!','Squeaky clean!','Sparkly!','Ahh nice!'],
+  sleep:['Zzz...','Cozy!','So sleepy...','Sweet dreams!']
+};
+
+function doCare(need){
+  const ps = petState();
+  if(ps[need] >= 100){ showMood('All good! 😊'); return; }
+  ps[need] = Math.min(100, ps[need] + 28);
+  ps.care += 1;
+  SND[need]();
+  showMood(MOODS[need][Math.floor(Math.random()*MOODS[need].length)]);
+  burstParticles(need);
+  bounceePet();
+
+  // reward
+  let earned = 1;
+  const allHappy = NEEDS.every(n=>ps[n] >= 70);
+  if(allHappy){
+    earned = 2;
+    if(!ps._wasHappy){ // bonus the moment it becomes fully happy
+      earned += 3;
+      SND.happy();
+      confetti(14);
+      showMood('Sooo happy! 💖');
+    }
+    ps._wasHappy = true;
+  } else {
+    ps._wasHappy = false;
+  }
+  addHearts(earned);
+  render();
+  save();
+}
+
+function bounceePet(){
+  const el=document.getElementById('petEl');
+  el.style.transform='scale(1.12)';
+  setTimeout(()=>el.style.transform='',120);
+}
+
+function addHearts(n){
+  state.hearts += n;
+  const pill=document.querySelector('.hearts-pill');
+  pill.style.transform='scale(1.18)';
+  setTimeout(()=>pill.style.transform='',150);
+  document.getElementById('heartCount').textContent=state.hearts;
+}
+
+const NEED_EMOJI={hunger:'🍎',fun:'🎾',clean:'🫧',sleep:'💤'};
+function burstParticles(need){
+  const yard=document.getElementById('petYard');
+  const r=yard.getBoundingClientRect();
+  for(let i=0;i<5;i++){
+    const s=document.createElement('span');
+    s.className='particle';
+    s.textContent= Math.random()<0.5 ? NEED_EMOJI[need] : '💖';
+    s.style.left=(r.width/2 + (Math.random()*120-60))+'px';
+    s.style.top=(r.height/2 + (Math.random()*40-20))+'px';
+    s.style.animationDelay=(i*0.05)+'s';
+    yard.appendChild(s);
+    setTimeout(()=>s.remove(),1100);
+  }
+}
+
+function confetti(n){
+  const colors=['#FF8A7A','#FFD66B','#9EE6C6','#9AD7FF','#C9B6FF'];
+  const app=document.getElementById('app');
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'%';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(1.2+Math.random()*0.8)+'s';
+    c.style.animationDelay=(Math.random()*0.2)+'s';
+    app.appendChild(c);
+    setTimeout(()=>c.remove(),2400);
+  }
+}
+
+/* ---------- TOAST ---------- */
+let toastTimer=null;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+/* ---------- OVERLAYS ---------- */
+const overlay=document.getElementById('overlay');
+const sheet=document.getElementById('sheet');
+function openSheet(html){ sheet.innerHTML=html; overlay.classList.add('show'); }
+function closeSheet(){ overlay.classList.remove('show'); }
+overlay.addEventListener('click',e=>{ if(e.target===overlay) closeSheet(); });
+
+/* ---------- COLLECTION ---------- */
+function openCollection(){
+  SND.tap();
+  const owned = PETS.filter(p=>state.owned[p.id]).length;
+  let cards = PETS.map(p=>{
+    const have = !!state.owned[p.id];
+    if(!have){
+      return `<div class="col-card locked"><div class="ce">❓</div><div class="cn">???</div></div>`;
+    }
+    const ps=state.owned[p.id];
+    const st=stageOf(ps.care);
+    const isActive = state.active===p.id;
+    const hatMark = ps.hat ? ` ${accById(ps.hat).emoji}` : '';
+    return `<div class="col-card ${isActive?'active-pet':''}" data-pick="${p.id}">
+      <span class="lvl">${st.label}</span>
+      <button class="card-rename" data-rename="${p.id}">✏️</button>
+      <div class="ce">${p.emoji}</div>
+      <div class="cn">${petLabel(p.id)}${hatMark}</div>
+      <div class="pick">${isActive?'★ Playing':'Tap to play'}</div>
+    </div>`;
+  }).join('');
+  openSheet(`
+    <button class="close-x" onclick="closeSheet()">✕</button>
+    <h2>My Pets 🐾</h2>
+    <div class="sub">${owned} of ${PETS.length} collected</div>
+    <div class="col-grid">${cards}</div>
+  `);
+  sheet.querySelectorAll('[data-pick]').forEach(c=>{
+    c.addEventListener('click',()=>{
+      state.active=c.dataset.pick;
+      SND.coin();
+      save(); render(); closeSheet();
+      welcomePet();
+      toast('Now playing with '+petLabel(state.active)+'!');
+    });
+  });
+  sheet.querySelectorAll('[data-rename]').forEach(b=>{
+    b.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      openRename(b.dataset.rename);
+    });
+  });
+}
+
+/* ---------- EGG SHOP ---------- */
+function openShop(){
+  SND.tap();
+  const canBuy = state.hearts >= EGG_COST;
+  const remaining = lockedCount();
+  let inner;
+  if(remaining===0){
+    inner = `<div class="egg-hero">🏆</div>
+      <div class="sub">You collected every pet! Amazing!! 🎉</div>`;
+  } else {
+    inner = `<div class="egg-hero">🥚</div>
+      <div class="sub">Hatch a surprise pet!<br>${remaining} still to discover</div>
+      <button class="big-btn" id="buyEgg" ${canBuy?'':'disabled'}>
+        ${canBuy ? `Hatch egg · 💖${EGG_COST}` : `Need 💖${EGG_COST} (you have ${state.hearts})`}
+      </button>
+      ${canBuy?'':'<div class="sub" style="margin-top:12px;">Care for your pet to earn more hearts!</div>'}`;
+  }
+  openSheet(`<button class="close-x" onclick="closeSheet()">✕</button>
+    <h2>Egg Shop 🥚</h2>${inner}`);
+  const b=document.getElementById('buyEgg');
+  if(b) b.addEventListener('click',hatchEgg);
+}
+
+function hatchEgg(){
+  if(state.hearts < EGG_COST) return;
+  state.hearts -= EGG_COST;
+  const pool = PETS.filter(p=>!state.owned[p.id]);
+  const picked = pool[Math.floor(Math.random()*pool.length)];
+  state.owned[picked.id]=newPet(picked.id);
+  save();
+  SND.tap();
+  // hatch sequence
+  openSheet(`<h2>Hatching...</h2><div class="hatch-egg">🥚</div><div class="sub">Wiggle wiggle...</div>`);
+  let shakes=0;
+  const shaker=setInterval(()=>{ shakes++; if(shakes===3) SND.coin(); },380);
+  setTimeout(()=>{
+    clearInterval(shaker);
+    SND.hatch();
+    confetti(30);
+    showNamingStep(picked);
+  },1500);
+}
+
+// some kid-friendly name suggestions per pet, plus the default
+const NAME_IDEAS = {
+  cat:['Mochi','Whiskers','Luna'], dog:['Biscuit','Buddy','Coco'],
+  bunny:['Marshmallow','Cotton','Hoppy'], fox:['Pumpkin','Rusty','Ginger'],
+  panda:['Bamboo','Oreo','Mei'], penguin:['Pebble','Waddles','Frosty'],
+  hamster:['Peanut','Nugget','Pip'], koala:['Gumnut','Eucy','Bluey'],
+  chick:['Sunny','Chirpy','Buttercup'], frog:['Lily','Hops','Bubbles'],
+  tiger:['Stripes','Rajah','Tigy'], unicorn:['Sparkle','Rainbow','Star'],
+  dragon:['Ember','Blaze','Smokey']
+};
+
+function showNamingStep(picked){
+  const ideas = NAME_IDEAS[picked.id] || [picked.name];
+  openSheet(`
+    <div class="new-tag">NEW PET!</div>
+    <div class="reveal-pet">${picked.emoji}</div>
+    <h2>Name your pet!</h2>
+    <div class="sub">Pick a name or type your own 💕</div>
+    <input class="name-input" id="nameInput" maxlength="12" value="${ideas[0]}" />
+    <div class="name-chips" id="nameChips">
+      ${ideas.map(n=>`<button class="name-chip" data-name="${n}">${n}</button>`).join('')}
+    </div>
+    <button class="big-btn mint" id="confirmName">That's the one! 💖</button>
+  `);
+  const input = document.getElementById('nameInput');
+  input.addEventListener('focus',()=>input.select());
+  document.getElementById('nameChips').querySelectorAll('.name-chip').forEach(c=>{
+    c.addEventListener('click',()=>{ input.value = c.dataset.name; SND.tap(); });
+  });
+  document.getElementById('confirmName').addEventListener('click',()=>{
+    let name = (input.value || '').trim().slice(0,12);
+    if(!name) name = picked.name;
+    state.owned[picked.id].customName = name;
+    SND.coin();
+    save();
+    revealNamedPet(picked, name);
+  });
+}
+
+function revealNamedPet(picked, name){
+  confetti(18);
+  openSheet(`
+    <div class="reveal-pet">${picked.emoji}</div>
+    <h2>Meet ${name}!</h2>
+    <div class="sub">Say hi to your new friend 💕</div>
+    <button class="big-btn mint" id="playNew">Play with ${name}</button>
+    <button class="big-btn" id="hatchMore" style="margin-top:10px;background:var(--white);color:var(--ink);box-shadow:0 6px 0 var(--shadow);">Back to park</button>
+  `);
+  document.getElementById('playNew').addEventListener('click',()=>{
+    state.active=picked.id; save(); render(); closeSheet(); welcomePet();
+    toast('Welcome, '+name+'!');
+  });
+  document.getElementById('hatchMore').addEventListener('click',()=>{ render(); openShop(); });
+}
+
+// rename a pet you already own
+function openRename(petId){
+  SND.tap();
+  const p = PETS.find(x=>x.id===petId);
+  const ideas = NAME_IDEAS[petId] || [p.name];
+  const current = petLabel(petId);
+  openSheet(`
+    <button class="close-x" onclick="closeSheet()">✕</button>
+    <div class="reveal-pet" style="font-size:90px;">${p.emoji}</div>
+    <h2>Rename your pet</h2>
+    <div class="sub">Type a new name or pick one 💕</div>
+    <input class="name-input" id="renameInput" maxlength="12" value="${current.replace(/"/g,'')}" />
+    <div class="name-chips" id="renameChips">
+      ${ideas.map(n=>`<button class="name-chip" data-name="${n}">${n}</button>`).join('')}
+    </div>
+    <button class="big-btn mint" id="saveName">Save name 💖</button>
+  `);
+  const input = document.getElementById('renameInput');
+  input.addEventListener('focus',()=>input.select());
+  document.getElementById('renameChips').querySelectorAll('.name-chip').forEach(c=>{
+    c.addEventListener('click',()=>{ input.value = c.dataset.name; SND.tap(); });
+  });
+  document.getElementById('saveName').addEventListener('click',()=>{
+    let name = (input.value || '').trim().slice(0,12);
+    if(!name) name = p.name;
+    state.owned[petId].customName = name;
+    SND.coin();
+    save(); render(); closeSheet();
+    toast('Renamed to '+name+'! 💖');
+  });
+}
+
+/* ---------- STYLE SHOP (hats & accessories) ---------- */
+function openStyleShop(){
+  SND.tap();
+  const p = pet(), ps = petState();
+  const wornEmoji = ps.hat ? accById(ps.hat).emoji : '';
+  const cards = ACCESSORIES.map(a=>{
+    const owned = state.accessories.includes(a.id);
+    const worn = ps.hat === a.id;
+    const canAfford = state.hearts >= a.cost;
+    let cls = 'acc-card';
+    if(owned) cls += ' owned';
+    if(worn) cls += ' worn';
+    if(!owned && !canAfford) cls += ' cant';
+    let bottom;
+    if(worn) bottom = `<div class="worn-tag">✓ Wearing</div>`;
+    else if(owned) bottom = `<div class="worn-tag">Tap to wear</div>`;
+    else bottom = `<div class="acost">💖${a.cost}</div>`;
+    return `<div class="${cls}" data-acc="${a.id}">
+      <div class="ae">${a.emoji}</div>
+      <div class="an">${a.name}</div>
+      ${bottom}
+    </div>`;
+  }).join('');
+
+  openSheet(`
+    <button class="close-x" onclick="closeSheet()">✕</button>
+    <h2>Style Shop 👒</h2>
+    <div class="sub">Dress up ${petLabel(state.active)}!</div>
+    <div class="preview-pet" id="previewPet">
+      <span class="preview-hat" id="previewHat" style="${wornEmoji?'':'display:none;'}">${wornEmoji}</span>
+      ${p.emoji}
+    </div>
+    <div class="acc-grid" id="accGrid">${cards}</div>
+    <button class="takeoff" id="takeoffBtn" style="${ps.hat?'':'display:none;'}">Take it off</button>
+  `);
+
+  document.getElementById('accGrid').querySelectorAll('[data-acc]').forEach(card=>{
+    card.addEventListener('click',()=>handleAccTap(card.dataset.acc));
+  });
+  const off = document.getElementById('takeoffBtn');
+  if(off) off.addEventListener('click',()=>{
+    petState().hat = null; SND.tap(); save(); render(); openStyleShop();
+  });
+}
+
+function handleAccTap(id){
+  const a = accById(id);
+  const ps = petState();
+  const owned = state.accessories.includes(id);
+  if(owned){
+    // toggle wear
+    if(ps.hat === id){ ps.hat = null; SND.tap(); }
+    else { ps.hat = id; SND.coin(); }
+    save(); render(); openStyleShop();
+  } else {
+    // try to buy
+    if(state.hearts < a.cost){
+      SND.nono();
+      toast('Need 💖'+a.cost+' for '+a.name);
+      return;
+    }
+    state.hearts -= a.cost;
+    state.accessories.push(id);
+    ps.hat = id;                 // auto-wear what you just bought
+    SND.happy(); confetti(14);
+    save(); render(); openStyleShop();
+    toast(a.name+' on! 💖');
+  }
+}
+
+/* ---------- DAILY GIFT ---------- */
+function dayStamp(d=new Date()){ return d.getFullYear()*1000 + (d.getMonth()*31+d.getDate()); }
+function checkDailyGift(){
+  const today=dayStamp();
+  if(state.lastGift===today) return false; // already claimed today
+  // streak logic
+  const yesterday=dayStamp(new Date(Date.now()-86400000));
+  if(state.lastGift===yesterday) state.streak+=1;
+  else state.streak=1;
+  return true;
+}
+function openDailyGift(){
+  const reward = 10 + Math.min(state.streak-1,4)*3; // grows with streak, capped
+  SND.gift();
+  let days='';
+  for(let i=1;i<=5;i++){
+    const done = i < state.streak;
+    const today = i === state.streak || (state.streak>5 && i===5);
+    const amt = 10 + (i-1)*3;
+    days += `<div class="streak-day ${done?'done':''} ${today?'today':''}">
+      <span class="sd-icon">${done?'✅':'💖'}</span>${amt}</div>`;
+  }
+  openSheet(`
+    <h2>Daily Gift! 🎁</h2>
+    <div class="sub">Day ${state.streak} streak — keep coming back!</div>
+    <div class="gift-box">🎁</div>
+    <div class="streak-row">${days}</div>
+    <button class="big-btn" id="claimGift">Open gift · +💖${reward}</button>
+  `);
+  document.getElementById('claimGift').addEventListener('click',()=>{
+    addHearts(reward);
+    state.lastGift=dayStamp();
+    SND.coin(); confetti(22);
+    save(); render(); closeSheet();
+    toast('+'+reward+' hearts! 💖');
+  });
+}
+
+/* ---------- FEED MINIGAME ---------- */
+const FOODS = ['🍓','🍎','🍌','🍉','🍇','🥕','🧀','🍪','🍩','🍰','🍗','🍕','🥦','🍔'];
+const BELLY_TARGET = 8;   // correct bites to fill the belly
+let fg = null;
+
+function openFeedGame(){
+  SND.tap();
+  const p = pet();
+  fg = { bites:0, combo:0, hearts:0, craving:null };
+  openSheet(`
+    <h2>Feeding Time! 🍴</h2>
+    <div class="sub">Tap the food ${petLabel(state.active)} wants</div>
+    <div class="fg">
+      <div class="fg-pet-wrap">
+        <div class="fg-crave" id="fgCrave"><span class="want">I want</span><span id="craveEmoji">🍓</span></div>
+        <div class="fg-pet" id="fgPet">${p.emoji}</div>
+      </div>
+      <div class="combo-tag" id="comboTag"></div>
+      <div class="belly-bar"><div class="belly-fill" id="bellyFill"></div></div>
+      <div class="belly-label" id="bellyLabel">Belly: empty</div>
+      <div class="plate" id="plate"></div>
+    </div>
+  `);
+  nextCraving();
+}
+
+function dealPlate(){
+  // 6 foods on the plate, guaranteed to include the craving
+  const plate = [fg.craving];
+  const others = FOODS.filter(f=>f!==fg.craving);
+  for(let i=others.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [others[i],others[j]]=[others[j],others[i]]; }
+  plate.push(...others.slice(0,5));
+  for(let i=plate.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [plate[i],plate[j]]=[plate[j],plate[i]]; }
+  const el = document.getElementById('plate');
+  el.innerHTML = plate.map(f=>`<button class="food" data-food="${f}">${f}</button>`).join('');
+  el.querySelectorAll('.food').forEach(b=>{
+    b.addEventListener('click',()=>tapFood(b));
+  });
+}
+
+function nextCraving(){
+  fg.craving = FOODS[Math.floor(Math.random()*FOODS.length)];
+  const ce = document.getElementById('craveEmoji');
+  if(ce){ ce.textContent = fg.craving;
+    const cv=document.getElementById('fgCrave'); cv.style.animation='none'; void cv.offsetWidth; cv.style.animation=''; }
+  dealPlate();
+}
+
+function tapFood(btn){
+  const food = btn.dataset.food;
+  if(food === fg.craving){
+    // correct!
+    SND.chomp();
+    btn.classList.add('eaten');
+    fg.bites++; fg.combo++; fg.hearts++;
+    const petEl = document.getElementById('fgPet');
+    petEl.classList.remove('chomp'); void petEl.offsetWidth; petEl.classList.add('chomp');
+
+    // combo bonus
+    const ct = document.getElementById('comboTag');
+    if(fg.combo >= 2){
+      ct.textContent = `Combo x${fg.combo}! 🔥`;
+      ct.classList.add('pop'); setTimeout(()=>ct.classList.remove('pop'),150);
+      if(fg.combo % 3 === 0){ fg.hearts++; SND.combo(); }
+    } else { ct.textContent=''; }
+
+    // belly bar
+    const pct = Math.min(100, Math.round(fg.bites/BELLY_TARGET*100));
+    document.getElementById('bellyFill').style.width = pct+'%';
+    const lbl=document.getElementById('bellyLabel');
+    lbl.textContent = pct>=100 ? 'Belly: full! 😋' : (pct>=60?'Belly: getting full 😊':'Belly: '+pct+'%');
+
+    if(fg.bites >= BELLY_TARGET){ setTimeout(endFeedGame, 350); return; }
+    setTimeout(nextCraving, 280);
+  } else {
+    // wrong — gentle, no penalty
+    SND.nono();
+    btn.classList.add('wrong');
+    fg.combo = 0;
+    document.getElementById('comboTag').textContent = '';
+    setTimeout(()=>btn.classList.remove('wrong'),350);
+  }
+}
+
+function endFeedGame(){
+  const ps = petState();
+  ps.hunger = 100;          // belly full
+  ps.care += 3;             // counts toward growth
+  const bonus = 3;          // full-belly bonus
+  const total = fg.hearts + bonus;
+
+  SND.happy(); confetti(20);
+  openSheet(`
+    <h2>Yummy! 😋</h2>
+    <div class="reveal-pet" style="font-size:110px;">${pet().emoji}</div>
+    <div class="sub">Belly full and happy!<br>Got ${fg.bites} bites${fg.combo>=3?' with big combos! 🔥':''}</div>
+    <button class="big-btn" id="feedDone">Yay! · +💖${total}</button>
+  `);
+  document.getElementById('feedDone').addEventListener('click',()=>{
+    addHearts(total);
+    // happy bonus check after feeding
+    if(NEEDS.every(n=>ps[n]>=70) && !ps._wasHappy){ ps._wasHappy=true; }
+    SND.coin();
+    save(); render(); closeSheet();
+    welcomePet();
+  });
+  save();
+}
+
+/* ---------- WELCOME ANIMATION ---------- */
+function welcomePet(){
+  const el=document.getElementById('petStack');
+  el.classList.add('welcome');
+  setTimeout(()=>el.classList.remove('welcome'),1700);
+}
+
+/* ---------- INIT ---------- */
+function start(){
+  applyDrain();
+  render();
+  document.getElementById('intro').style.display='none';
+  state.seenIntro=true;
+  if(audio() && actx.state==='suspended') actx.resume();
+  welcomePet();
+  // daily gift after a short beat
+  setTimeout(()=>{ if(checkDailyGift()) openDailyGift(); }, 700);
+  save();
+}
+
+document.getElementById('startBtn').addEventListener('click',start);
+
+// care buttons
+document.querySelectorAll('.act').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(btn.dataset.need==='hunger') openFeedGame();
+    else doCare(btn.dataset.need);
+  });
+});
+// pet tap = little reaction
+document.getElementById('petEl').addEventListener('click',()=>{
+  SND.tap(); bounceePet();
+  const cheers=['Hi! 👋','Hehe!','💕','I love you!','Boop!'];
+  showMood(cheers[Math.floor(Math.random()*cheers.length)]);
+});
+document.getElementById('collectionBtn').addEventListener('click',openCollection);
+document.getElementById('petNameTag').addEventListener('click',()=>openRename(state.active));
+document.getElementById('styleBtn').addEventListener('click',openStyleShop);
+document.getElementById('shopBtn').addEventListener('click',openShop);
+document.getElementById('soundBtn').addEventListener('click',()=>{
+  state.sound=!state.sound;
+  render(); save();
+  if(state.sound) SND.coin();
+  toast(state.sound?'Sound on 🔊':'Sound off 🔇');
+});
+
+// slow live drain while playing (gentle) + autosave
+setInterval(()=>{
+  if(!state || !state.seenIntro) return;
+  const ps=petState();
+  NEEDS.forEach(n=>{ ps[n]=Math.max(0, ps[n]-0.4); });
+  state.lastSeen=Date.now();
+  // recheck happy flag
+  if(!NEEDS.every(n=>ps[n]>=70)) ps._wasHappy=false;
+  render(); save();
+}, 8000);
+
+// save the moment the app is hidden or closed (mobile-safe)
+function saveOnExit(){
+  if(state && state.seenIntro){ state.lastSeen=Date.now(); save(); }
+}
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) saveOnExit(); });
+window.addEventListener('pagehide', saveOnExit);
+window.addEventListener('beforeunload', saveOnExit);
+
+// boot
+load();
+if(state.seenIntro){
+  document.getElementById('intro').style.display='none';
+  applyDrain(); render(); welcomePet();
+  setTimeout(()=>{ if(checkDailyGift()) openDailyGift(); }, 600);
+} else {
+  render();
+}
+</script>
+</body>
+</html>
