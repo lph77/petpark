@@ -334,6 +334,75 @@
   .food.eaten{animation:flyup .4s forwards;}
   @keyframes flyup{to{transform:translateY(-120px) scale(.2);opacity:0;}}
 
+  /* ---------- MINIGAMES ---------- */
+  @keyframes nono{0%,100%{transform:translateX(0);}20%{transform:translateX(-9px) rotate(-6deg);}
+    60%{transform:translateX(9px) rotate(6deg);}}
+  /* feed: food pads */
+  .pad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0;}
+  .pad{border:none;border-radius:20px;padding:16px 0;font-size:40px;line-height:1;cursor:pointer;
+    background:var(--white);box-shadow:0 5px 0 var(--shadow);transition:transform .1s,box-shadow .1s,background .1s;}
+  .pad:active{transform:translateY(3px);box-shadow:0 2px 0 var(--shadow);}
+  .pad.lit{background:linear-gradient(180deg,#FFE08A,var(--sun-deep));transform:scale(1.06);
+    box-shadow:0 5px 0 #C9962B, 0 0 0 4px rgba(255,214,107,.6);}
+  .seq-dots{display:flex;justify-content:center;gap:10px;margin-top:10px;}
+  .dot-o,.dot-f{width:16px;height:16px;border-radius:50%;}
+  .dot-o{background:#EFE0D5;box-shadow:inset 0 1px 2px rgba(120,80,60,.2);}
+  .dot-f{background:linear-gradient(180deg,#9EE6C6,var(--mint-deep));}
+  /* play: memory cards */
+  .match-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0;}
+  .card{border:none;border-radius:16px;aspect-ratio:1;cursor:pointer;font-size:30px;
+    background:linear-gradient(180deg,#C9B6FF,var(--lav-deep));color:#fff;
+    box-shadow:0 5px 0 #6E54C2;transition:transform .12s;display:grid;place-items:center;}
+  .card:active{transform:translateY(3px);}
+  .card.up{background:var(--white);box-shadow:0 5px 0 var(--shadow);}
+  .card.matched{background:linear-gradient(180deg,#B5F0D6,var(--mint-deep));box-shadow:0 5px 0 #3A9B74;
+    animation:matchpop .35s;}
+  @keyframes matchpop{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+  .card-face{pointer-events:none;}
+  /* wash: bubbles */
+  .wash-area{position:relative;width:100%;height:270px;border-radius:24px;margin:8px 0;
+    background:linear-gradient(180deg,#D7F2FF,#A7DEF5);overflow:hidden;}
+  .wash-pet{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);font-size:78px;opacity:.8;}
+  .bubble{position:absolute;transform:translate(-50%,-50%);width:46px;height:46px;border-radius:50%;
+    border:3px solid rgba(255,255,255,.8);cursor:pointer;font-family:'Baloo 2';font-weight:800;
+    font-size:19px;color:var(--sky-deep);
+    background:radial-gradient(circle at 35% 30%, #fff, rgba(154,215,255,.85));
+    box-shadow:0 3px 6px rgba(80,120,150,.3);}
+  .bubble.pop{animation:bpop .2s forwards;}
+  @keyframes bpop{to{transform:translate(-50%,-50%) scale(1.6);opacity:0;}}
+  .bubble.shake{animation:nono .35s;}
+  /* sleep: sheep counting */
+  .sheep-field{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;
+    min-height:130px;background:linear-gradient(180deg,#3B3168,#5A4B97);border-radius:24px;
+    padding:16px;margin:8px 0;}
+  .sheep{font-size:42px;animation:hop 1.4s ease-in-out infinite;}
+  .zletter{font-family:'Baloo 2';font-weight:800;color:#fff;display:inline-block;
+    padding:1px 5px;line-height:1.15;text-shadow:0 1px 2px rgba(0,0,0,.25);}
+  @keyframes hop{0%,100%{transform:translateY(0);}40%{transform:translateY(-12px);}}
+  .num-row{display:flex;justify-content:center;gap:14px;margin-top:6px;}
+  .num-btn{width:64px;height:64px;border:none;border-radius:18px;cursor:pointer;
+    font-family:'Baloo 2';font-weight:800;font-size:30px;color:#fff;
+    background:linear-gradient(180deg,#7FD6FF,var(--sky-deep));box-shadow:0 5px 0 #3A86C9;transition:transform .1s;}
+  .num-btn:active{transform:translateY(3px);}
+  .num-btn.right{background:linear-gradient(180deg,#B5F0D6,var(--mint-deep));box-shadow:0 5px 0 #3A9B74;
+    animation:matchpop .35s;}
+  .num-btn.wrongnum{animation:nono .35s;}
+  /* Z slider answer */
+  .z-answer{margin-top:14px;text-align:center;}
+  .z-val{font-family:'Baloo 2';font-weight:800;font-size:48px;color:var(--sky-deep);line-height:1;}
+  .z-val.z-right{color:var(--mint-deep);animation:matchpop .35s;}
+  .z-val.z-shake{animation:nono .35s;}
+  .z-slider{-webkit-appearance:none;appearance:none;width:90%;height:14px;border-radius:999px;
+    background:#EFE0D5;outline:none;margin:10px 0 2px;}
+  .z-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:34px;height:34px;
+    border-radius:50%;background:linear-gradient(180deg,#7FD6FF,var(--sky-deep));cursor:pointer;
+    box-shadow:0 3px 0 #3A86C9;border:3px solid #fff;}
+  .z-slider::-moz-range-thumb{width:34px;height:34px;border-radius:50%;border:3px solid #fff;
+    background:var(--sky-deep);cursor:pointer;box-shadow:0 3px 0 #3A86C9;}
+  .z-scale{display:flex;justify-content:space-between;width:90%;margin:0 auto;
+    font-weight:800;font-size:12px;color:var(--ink-soft);}
+  .z-hint{font-weight:800;font-size:14px;color:var(--ink-soft);margin:8px 0 2px;min-height:18px;}
+
   /* ---------- DECORATE SHOP ---------- */
   .dtabs{display:flex;gap:8px;margin:6px 0 12px;}
   .dtab{flex:1;border:none;border-radius:14px;padding:10px;cursor:pointer;
@@ -457,7 +526,7 @@
   </div>
 
   <div class="toast" id="toast"></div>
-  <div class="ver">v1.5 · drag props</div>
+  <div class="ver">v2.1 · random images</div>
 </div>
 
 <script>
@@ -817,45 +886,36 @@ function showMood(text){
   clearTimeout(moodTimer);
   moodTimer=setTimeout(()=>b.classList.remove('show'),1300);
 }
-const MOODS = {
-  hunger:['Yum!','So tasty!','Nom nom!','Delicious!'],
-  fun:['Wheee!','So fun!','Again!','Yay!'],
-  clean:['So fresh!','Squeaky clean!','Sparkly!','Ahh nice!'],
-  sleep:['Zzz...','Cozy!','So sleepy...','Sweet dreams!']
-};
+// each action launches its own thinking minigame
+function openActivity(need){
+  SND.tap();
+  if(need==='hunger') feedGame();
+  else if(need==='fun') playGame();
+  else if(need==='clean') washGame();
+  else if(need==='sleep') sleepGame();
+}
 
-function doCare(need){
+// called when a minigame is won — completes the need fully (no spamming)
+function finishActivity(need, hearts, title){
   const ps = petState();
-  if(ps[need] >= 100){ showMood('All good! 😊'); return; }
   const beforeStage = stageIndex(ps.care);
-  ps[need] = Math.min(100, ps[need] + 28);
-  ps.care += 1;
-  SND[need]();
-  showMood(MOODS[need][Math.floor(Math.random()*MOODS[need].length)]);
-  burstParticles(need);
-  bounceePet();
-
-  // reward
-  let earned = 1;
-  const allHappy = NEEDS.every(n=>ps[n] >= 70);
-  if(allHappy){
-    earned = 2;
-    if(!ps._wasHappy){ // bonus the moment it becomes fully happy
-      earned += 3;
-      SND.happy();
-      confetti(14);
-      showMood('Sooo happy! 💖');
-    }
-    ps._wasHappy = true;
-  } else {
-    ps._wasHappy = false;
-  }
-  addHearts(earned);
-  render();
+  ps[need] = 100;        // one win = fully done
+  ps.care += 3;          // counts toward growth
+  const grew = stageIndex(ps.care) > beforeStage;
+  if(NEEDS.every(n=>ps[n]>=70)){ ps._wasHappy = true; }
+  SND.happy(); confetti(20);
+  openSheet(`
+    <div class="reveal-pet" style="font-size:104px;">${pet().emoji}</div>
+    <h2>${title}</h2>
+    <div class="sub">+💖${hearts}</div>
+    <button class="big-btn mint" id="actDone">Yay!</button>
+  `);
+  document.getElementById('actDone').addEventListener('click',()=>{
+    addHearts(hearts); SND.coin();
+    save(); render(); closeSheet();
+    if(grew) celebrateGrowth(); else welcomePet();
+  });
   save();
-
-  // growth celebration if a stage was crossed
-  if(stageIndex(ps.care) > beforeStage) celebrateGrowth();
 }
 
 // pet just advanced a growth stage
@@ -1319,115 +1379,238 @@ function openDailyGift(){
   });
 }
 
-/* ---------- FEED MINIGAME ---------- */
-const FOODS = ['🍓','🍎','🍌','🍉','🍇','🥕','🧀','🍪','🍩','🍰','🍗','🍕','🥦','🍔'];
-const BELLY_TARGET = 8;   // correct bites to fill the belly
-let fg = null;
+/* ============================================================
+   ACTIVITY MINIGAMES (each win completes the need fully)
+   ============================================================ */
 
-function openFeedGame(){
-  SND.tap();
-  const p = pet();
-  fg = { bites:0, combo:0, hearts:0, craving:null };
+/* ---------- FEED: "Yummy Order" — repeat the food sequence ---------- */
+const FOOD_POOL = ['🍓','🍌','🍪','🍎','🍉','🍇','🍒','🍑','🥕','🌽','🍕','🍔','🍩','🍰','🧀','🍗','🍫','🍿','🥨','🍦','🍭','🥝','🍍','🥦'];
+function feedGame(){
+  const mistakes = {n:0};
+  const seqLen = 8;
+  const padFoods = [...FOOD_POOL].sort(()=>Math.random()-0.5).slice(0,6); // 6 random foods, new each time
+  const seq = Array.from({length:seqLen}, ()=>padFoods[Math.floor(Math.random()*padFoods.length)]);
+  let input = [];
+  let accepting = false;
+
   openSheet(`
-    <h2>Feeding Time! 🍴</h2>
-    <div class="sub">Tap the food ${petLabel(state.active)} wants</div>
-    <div class="fg">
-      <div class="fg-pet" id="fgPet">${p.emoji}</div>
-      <div class="fg-craving" id="fgCrave">
-        <span class="cw">I want</span><span class="ce" id="craveEmoji">🍓</span>
-      </div>
-      <div class="combo-tag" id="comboTag"></div>
-      <div class="belly-bar"><div class="belly-fill" id="bellyFill"></div></div>
-      <div class="belly-label" id="bellyLabel">Belly: empty</div>
-      <div class="plate" id="plate"></div>
+    <h2>Yummy Order 🍴</h2>
+    <div class="sub" id="feedSub">Watch what ${petLabel(state.active)} wants!</div>
+    <div class="reveal-pet" style="font-size:74px;margin:2px auto 6px;">${pet().emoji}</div>
+    <div class="pad-grid" id="padGrid">
+      ${padFoods.map((f,i)=>`<button class="pad" data-i="${i}" disabled>${f}</button>`).join('')}
+    </div>
+    <div class="seq-dots" id="seqDots">${seq.map(()=>'<span class="dot-o"></span>').join('')}</div>
+  `);
+
+  const pads = [...sheet.querySelectorAll('.pad')];
+  function flash(idx, cb){
+    const target = pads.find(p=>padFoods[+p.dataset.i]===seq[idx]);
+    if(!target || !document.getElementById('padGrid')) return;   // sheet closed
+    target.classList.add('lit'); SND.feed();
+    setTimeout(()=>{ target.classList.remove('lit'); cb&&cb(); }, 520);
+  }
+  function playSeq(){
+    accepting = false;
+    const sub = document.getElementById('feedSub');
+    if(!sub) return;                       // sheet closed — stop
+    sub.textContent = `Watch what ${petLabel(state.active)} wants!`;
+    let i=0;
+    (function step(){
+      if(!document.getElementById('padGrid')) return;   // sheet gone
+      if(i>=seq.length){ accepting=true; const s=document.getElementById('feedSub'); if(s) s.textContent='Your turn! Tap them in order'; return; }
+      flash(i, ()=>{ i++; setTimeout(step,180); });
+    })();
+  }
+  function markDots(){
+    const dots=[...document.getElementById('seqDots').children];
+    dots.forEach((d,i)=>d.className = i<input.length ? 'dot-f' : 'dot-o');
+  }
+  pads.forEach(p=>{
+    p.disabled=false;
+    p.addEventListener('click',()=>{
+      if(!accepting) return;
+      const emoji = padFoods[+p.dataset.i];
+      p.classList.add('lit'); setTimeout(()=>p.classList.remove('lit'),200);
+      input.push(emoji);
+      const idx = input.length-1;
+      if(emoji !== seq[idx]){
+        SND.nono(); mistakes.n++;
+        input=[]; markDots();
+        document.getElementById('feedSub').textContent='Oops! Watch again 👀';
+        accepting=false;
+        setTimeout(playSeq, 800);
+        return;
+      }
+      SND.feed(); markDots();
+      if(input.length===seq.length){
+        accepting=false;
+        const hearts = mistakes.n===0 ? 7 : 4;
+        setTimeout(()=>finishActivity('hunger', hearts, mistakes.n===0?'Perfect order! 😋':'Yummy! 😋'), 350);
+      }
+    });
+  });
+  setTimeout(playSeq, 600);
+}
+
+/* ---------- PLAY: "Find the Pairs" — memory match ---------- */
+const TOY_SET = ['🎾','⚽','🪀','🧸','🎈','🪁','🎯','🔔','🚗','🪅','🎲','🧩','🏀','🎸','🦖','🚀','🎁','⭐','🌈','🍭'];
+function playGame(){
+  // 8 pairs = 16 cards, random toys each time
+  const chosen = [...TOY_SET].sort(()=>Math.random()-0.5).slice(0,8);
+  let deck = [...chosen, ...chosen].sort(()=>Math.random()-0.5);
+  let flipped = [];       // indices currently face up (unmatched)
+  let matched = [];       // matched indices
+  let busy = false;
+  let mistakes = 0;
+
+  openSheet(`
+    <h2>Find the Pairs 🎾</h2>
+    <div class="sub">Tap two cards to find a match!</div>
+    <div class="match-grid" id="matchGrid">
+      ${deck.map((t,i)=>`<button class="card" data-i="${i}"><span class="card-face">❓</span></button>`).join('')}
     </div>
   `);
-  nextCraving();
-}
-
-function dealPlate(){
-  // 6 foods on the plate, guaranteed to include the craving
-  const plate = [fg.craving];
-  const others = FOODS.filter(f=>f!==fg.craving);
-  for(let i=others.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [others[i],others[j]]=[others[j],others[i]]; }
-  plate.push(...others.slice(0,5));
-  for(let i=plate.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [plate[i],plate[j]]=[plate[j],plate[i]]; }
-  const el = document.getElementById('plate');
-  el.innerHTML = plate.map(f=>`<button class="food" data-food="${f}">${f}</button>`).join('');
-  el.querySelectorAll('.food').forEach(b=>{
-    b.addEventListener('click',()=>tapFood(b));
+  const cards=[...sheet.querySelectorAll('.card')];
+  function show(i){ cards[i].classList.add('up'); cards[i].querySelector('.card-face').textContent=deck[i]; }
+  function hide(i){ cards[i].classList.remove('up'); cards[i].querySelector('.card-face').textContent='❓'; }
+  cards.forEach(c=>{
+    c.addEventListener('click',()=>{
+      const i=+c.dataset.i;
+      if(busy || flipped.includes(i) || matched.includes(i)) return;
+      show(i); SND.tap(); flipped.push(i);
+      if(flipped.length===2){
+        const [a,b]=flipped;
+        if(deck[a]===deck[b]){
+          matched.push(a,b); flipped=[];
+          cards[a].classList.add('matched'); cards[b].classList.add('matched');
+          SND.coin();
+          if(matched.length===deck.length){
+            const hearts = mistakes===0 ? 7 : 4;
+            setTimeout(()=>finishActivity('fun', hearts, mistakes===0?'All matched! 🎉':'Great playing! 🎾'), 400);
+          }
+        } else {
+          busy=true; mistakes++; SND.nono();
+          setTimeout(()=>{ hide(a); hide(b); flipped=[]; busy=false; }, 800);
+        }
+      }
+    });
   });
 }
 
-function nextCraving(){
-  fg.craving = FOODS[Math.floor(Math.random()*FOODS.length)];
-  const ce = document.getElementById('craveEmoji');
-  if(ce){ ce.textContent = fg.craving;
-    const cv=document.getElementById('fgCrave'); cv.style.animation='none'; void cv.offsetWidth; cv.style.animation=''; }
-  dealPlate();
-}
-
-function tapFood(btn){
-  const food = btn.dataset.food;
-  if(food === fg.craving){
-    // correct!
-    SND.chomp();
-    btn.classList.add('eaten');
-    fg.bites++; fg.combo++; fg.hearts++;
-    const petEl = document.getElementById('fgPet');
-    petEl.classList.remove('chomp'); void petEl.offsetWidth; petEl.classList.add('chomp');
-
-    // combo bonus
-    const ct = document.getElementById('comboTag');
-    if(fg.combo >= 2){
-      ct.textContent = `Combo x${fg.combo}! 🔥`;
-      ct.classList.add('pop'); setTimeout(()=>ct.classList.remove('pop'),150);
-      if(fg.combo % 3 === 0){ fg.hearts++; SND.combo(); }
-    } else { ct.textContent=''; }
-
-    // belly bar
-    const pct = Math.min(100, Math.round(fg.bites/BELLY_TARGET*100));
-    document.getElementById('bellyFill').style.width = pct+'%';
-    const lbl=document.getElementById('bellyLabel');
-    lbl.textContent = pct>=100 ? 'Belly: full! 😋' : (pct>=60?'Belly: getting full 😊':'Belly: '+pct+'%');
-
-    if(fg.bites >= BELLY_TARGET){ setTimeout(endFeedGame, 350); return; }
-    setTimeout(nextCraving, 280);
-  } else {
-    // wrong — gentle, no penalty
-    SND.nono();
-    btn.classList.add('wrong');
-    fg.combo = 0;
-    document.getElementById('comboTag').textContent = '';
-    setTimeout(()=>btn.classList.remove('wrong'),350);
+/* ---------- WASH: "Bubble Pop" — moving bubbles, order changes ---------- */
+function washGame(){
+  const st = stageOf(petState().care);
+  const N = st.index>=2 ? 12 : 10;          // more bubbles
+  const ascending = Math.random() < 0.5;    // order flips every round
+  let idx=0, mistakes=0;
+  const pool=[]; for(let i=1;i<=40;i++) pool.push(i);
+  for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+  const nums = pool.slice(0,N);
+  const order = [...nums].sort((a,b)=> ascending ? a-b : b-a);
+  const spots=[];
+  for(let i=0;i<N;i++){
+    let x,y,tries=0;
+    do{ x=11+Math.random()*78; y=12+Math.random()*68; tries++; }
+    while(tries<40 && spots.some(s=>Math.abs(s.x-x)<12 && Math.abs(s.y-y)<12));
+    spots.push({x,y});
   }
+  openSheet(`
+    <h2>Bubble Pop 🫧</h2>
+    <div class="sub">Pop them <b>${ascending?'smallest → biggest':'biggest → smallest'}</b>!</div>
+    <div class="wash-area" id="washArea">
+      <div class="wash-pet">${pet().emoji}</div>
+      ${nums.map((n,i)=>`<button class="bubble" data-n="${n}" style="left:${spots[i].x}%;top:${spots[i].y}%;">${n}</button>`).join('')}
+    </div>
+    <div class="sub" id="washHint" style="margin-top:10px;">${N} bubbles left</div>
+  `);
+  const bubbleEls = [...sheet.querySelectorAll('.bubble')];
+  // movement state
+  const mov = bubbleEls.map((el,i)=>({
+    el, x:spots[i].x, y:spots[i].y, dead:false,
+    vx:(Math.random()<.5?-1:1)*(0.10+Math.random()*0.16),
+    vy:(Math.random()<.5?-1:1)*(0.10+Math.random()*0.16)
+  }));
+  let raf;
+  function tick(){
+    if(!document.getElementById('washArea')){ if(raf) cancelAnimationFrame(raf); return; } // sheet closed
+    mov.forEach(m=>{
+      if(m.dead) return;
+      m.x+=m.vx; m.y+=m.vy;
+      if(m.x<7){m.x=7;m.vx=Math.abs(m.vx);} if(m.x>93){m.x=93;m.vx=-Math.abs(m.vx);}
+      if(m.y<8){m.y=8;m.vy=Math.abs(m.vy);} if(m.y>90){m.y=90;m.vy=-Math.abs(m.vy);}
+      m.el.style.left=m.x+'%'; m.el.style.top=m.y+'%';
+    });
+    raf=requestAnimationFrame(tick);
+  }
+  if(typeof requestAnimationFrame==='function') raf=requestAnimationFrame(tick);
+
+  bubbleEls.forEach((b,i)=>{
+    b.addEventListener('click',()=>{
+      const n=+b.dataset.n;
+      if(n===order[idx]){
+        mov[i].dead=true;
+        b.classList.add('pop'); SND.clean();
+        setTimeout(()=>b.remove(),200);
+        idx++;
+        const hint=document.getElementById('washHint');
+        if(hint) hint.textContent = idx<N ? (N-idx)+' bubbles left' : 'All clean! ✨';
+        if(idx>=N){
+          if(raf) cancelAnimationFrame(raf);
+          const hearts = mistakes===0 ? 7 : 4;
+          setTimeout(()=>finishActivity('clean', hearts, mistakes===0?'Squeaky clean! ✨':'All clean! 🫧'), 350);
+        }
+      } else {
+        SND.nono(); mistakes++;
+        b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),350);
+      }
+    });
+  });
 }
 
-function endFeedGame(){
-  const ps = petState();
-  const beforeStage = stageIndex(ps.care);
-  ps.hunger = 100;          // belly full
-  ps.care += 3;             // counts toward growth
-  const grew = stageIndex(ps.care) > beforeStage;
-  const bonus = 3;          // full-belly bonus
-  const total = fg.hearts + bonus;
+/* ---------- SLEEP: "Count the Z" — count Z's among other letters ---------- */
+function sleepGame(){
+  const st = stageOf(petState().care);
+  const big = st.index>=2;
+  const zCount = big ? (13 + Math.floor(Math.random()*7))   // 13..19
+                     : (11 + Math.floor(Math.random()*5));  // 11..15 (always >10)
+  const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXY'.split('');       // distractors (no Z)
+  const dCount = 16 + Math.floor(Math.random()*13);         // 16..28 other letters (more rows)
+  let field = [...Array(zCount).fill('Z')];
+  for(let i=0;i<dCount;i++) field.push(alpha[Math.floor(Math.random()*alpha.length)]);
+  for(let i=field.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [field[i],field[j]]=[field[j],field[i]]; }
+  let mistakes=0;
+  const SMIN=10, SMAX=20, start=Math.round((SMIN+SMAX)/2);
 
-  SND.happy(); confetti(20);
   openSheet(`
-    <h2>Yummy! 😋</h2>
-    <div class="reveal-pet" style="font-size:110px;">${pet().emoji}</div>
-    <div class="sub">Belly full and happy!<br>Got ${fg.bites} bites${fg.combo>=3?' with big combos! 🔥':''}</div>
-    <button class="big-btn" id="feedDone">Yay! · +💖${total}</button>
+    <h2>Count the Z 💤</h2>
+    <div class="sub">How many <b>Z</b>? (zzz...)</div>
+    <div class="sheep-field" id="sheepField">
+      ${field.map(e=>{ const sz=20+Math.floor(Math.random()*22); return `<span class="zletter" style="font-size:${sz}px">${e}</span>`; }).join('')}
+    </div>
+    <div class="z-answer">
+      <div class="z-val" id="zVal">${start}</div>
+      <input type="range" class="z-slider" id="zSlider" min="${SMIN}" max="${SMAX}" value="${start}" step="1">
+      <div class="z-scale"><span>${SMIN}</span><span>${SMAX}</span></div>
+      <div class="z-hint" id="zHint">Slide to your answer, then Confirm</div>
+      <button class="big-btn mint" id="zConfirm">Confirm</button>
+    </div>
   `);
-  document.getElementById('feedDone').addEventListener('click',()=>{
-    addHearts(total);
-    // happy bonus check after feeding
-    if(NEEDS.every(n=>ps[n]>=70) && !ps._wasHappy){ ps._wasHappy=true; }
-    SND.coin();
-    save(); render(); closeSheet();
-    if(grew) celebrateGrowth(); else welcomePet();
+  const slider=document.getElementById('zSlider');
+  const valEl=document.getElementById('zVal');
+  slider.addEventListener('input',()=>{ valEl.textContent=slider.value; });
+  document.getElementById('zConfirm').addEventListener('click',()=>{
+    const g=+slider.value;
+    if(g===zCount){
+      valEl.classList.add('z-right'); SND.sleep();
+      const hearts = mistakes===0 ? 7 : 4;
+      setTimeout(()=>finishActivity('sleep', hearts, mistakes===0?'Counted right! 😴':'Sweet dreams! 💤'), 450);
+    } else {
+      mistakes++; SND.nono();
+      valEl.classList.remove('z-shake'); void valEl.offsetWidth; valEl.classList.add('z-shake');
+      document.getElementById('zHint').textContent = 'Not quite — count again!';
+    }
   });
-  save();
 }
 
 /* ---------- WELCOME ANIMATION ---------- */
@@ -1454,10 +1637,7 @@ document.getElementById('startBtn').addEventListener('click',start);
 
 // care buttons
 document.querySelectorAll('.act').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    if(btn.dataset.need==='hunger') openFeedGame();
-    else doCare(btn.dataset.need);
-  });
+  btn.addEventListener('click',()=>openActivity(btn.dataset.need));
 });
 // pet tap = little reaction
 document.getElementById('petEl').addEventListener('click',()=>{
