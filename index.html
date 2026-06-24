@@ -111,16 +111,37 @@
     transition:transform .1s;position:relative;z-index:2;
   }
   .pet:active{transform:scale(.93);}
-  .pet-hat{
-    position:absolute;left:50%;top:0;transform:translate(-50%,-32%);
-    font-size:54px;line-height:1;z-index:3;pointer-events:none;
-    filter:drop-shadow(0 3px 3px rgba(120,80,60,.22));
-  }
+  .pet-wear{position:absolute;left:50%;line-height:1;pointer-events:none;
+    filter:drop-shadow(0 3px 3px rgba(120,80,60,.22));}
+  .pet-hat{top:0;transform:translate(-50%,-32%);z-index:4;font-size:54px;}
+  .pet-neck{bottom:0;transform:translate(-50%,28%);z-index:3;font-size:44px;}
+  .pet-back{top:50%;transform:translate(-50%,-50%);z-index:1;font-size:130px;opacity:.95;}
+  .pet-stack.growpop{animation:growpop .7s cubic-bezier(.2,1.6,.4,1);}
+  @keyframes growpop{0%{transform:scale(.7);}55%{transform:scale(1.25);}100%{transform:scale(1);}}
   @keyframes idle{0%,100%{transform:translateY(0) rotate(-1deg) scale(1);}50%{transform:translateY(-14px) rotate(1deg) scale(1.02);}}
   .pet.happy{animation:happyhop .5s ease-in-out infinite;}
   @keyframes happyhop{0%,100%{transform:translateY(0) scale(1);}30%{transform:translateY(-32px) scale(1.06);}60%{transform:translateY(0) scale(.98);}}
   .pet.welcome{animation:welcomewiggle .4s ease-in-out 4;}
   @keyframes welcomewiggle{0%,100%{transform:rotate(0) scale(1.05);}25%{transform:rotate(-9deg) scale(1.05);}75%{transform:rotate(9deg) scale(1.05);}}
+
+  /* growth bar */
+  .grow-wrap{width:78%;margin:0 auto 2px;text-align:center;}
+  .grow-bar{height:8px;border-radius:999px;background:#EFE0D5;overflow:hidden;
+    box-shadow:inset 0 1px 2px rgba(120,80,60,.18);}
+  .grow-fill{height:100%;width:0;border-radius:999px;
+    background:linear-gradient(90deg,#9EE6C6,#4FBF93);transition:width .5s ease;}
+  .grow-label{font-size:11px;font-weight:800;color:var(--ink-soft);margin-top:2px;
+    text-shadow:0 1px 2px rgba(255,255,255,.45);}
+
+  /* room props */
+  .prop-layer{position:absolute;inset:0;z-index:1;pointer-events:none;}
+  .prop-layer.lift{z-index:7;}
+  .prop{position:absolute;line-height:1;transform:translate(-50%,-50%);
+    filter:drop-shadow(0 3px 3px rgba(120,80,60,.18));
+    pointer-events:auto;touch-action:none;cursor:grab;
+    transition:transform .1s, filter .1s;}
+  .prop.dragging{transform:translate(-50%,-50%) scale(1.18);cursor:grabbing;z-index:6;
+    filter:drop-shadow(0 8px 8px rgba(120,80,60,.3));}
 
   .mood-bubble{
     position:absolute;top:6%;left:50%;transform:translateX(-50%);
@@ -313,11 +334,23 @@
   .food.eaten{animation:flyup .4s forwards;}
   @keyframes flyup{to{transform:translateY(-120px) scale(.2);opacity:0;}}
 
-  /* ---------- STYLE SHOP ---------- */
-  .preview-pet{position:relative;display:inline-flex;justify-content:center;margin:2px auto 10px;
-    font-size:96px;line-height:1;filter:drop-shadow(0 6px 5px rgba(120,80,60,.18));}
-  .preview-hat{position:absolute;left:50%;top:0;transform:translate(-50%,-30%);font-size:42px;
-    line-height:1;filter:drop-shadow(0 3px 3px rgba(120,80,60,.22));}
+  /* ---------- DECORATE SHOP ---------- */
+  .dtabs{display:flex;gap:8px;margin:6px 0 12px;}
+  .dtab{flex:1;border:none;border-radius:14px;padding:10px;cursor:pointer;
+    font-family:'Baloo 2';font-weight:800;font-size:16px;color:var(--ink-soft);
+    background:var(--white);box-shadow:0 3px 0 var(--shadow);}
+  .dtab.on{background:linear-gradient(180deg,#FFC25E,var(--coral-deep));color:#fff;box-shadow:0 3px 0 #C44A35;}
+  .dtab:active{transform:translateY(2px);}
+  .slot-title{font-family:'Baloo 2';font-weight:800;font-size:15px;color:var(--ink);
+    margin:14px 2px 8px;text-align:left;}
+  .preview-pet{position:relative;display:inline-flex;justify-content:center;align-items:center;
+    width:120px;height:110px;margin:2px auto 6px;font-size:84px;line-height:1;
+    filter:drop-shadow(0 6px 5px rgba(120,80,60,.18));}
+  .preview-pet .pv-pet{position:relative;z-index:2;}
+  .preview-pet .pv{position:absolute;left:50%;line-height:1;}
+  .preview-pet .pv-hat{top:2px;transform:translate(-50%,-46%);font-size:38px;z-index:3;}
+  .preview-pet .pv-neck{bottom:2px;transform:translate(-50%,40%);font-size:30px;z-index:3;}
+  .preview-pet .pv-back{top:50%;transform:translate(-50%,-50%);font-size:96px;z-index:1;opacity:.95;}
   .acc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
   .acc-card{background:var(--white);border-radius:20px;padding:12px 6px 9px;text-align:center;
     box-shadow:0 4px 0 var(--shadow);cursor:pointer;transition:transform .08s,box-shadow .08s;position:relative;}
@@ -329,10 +362,16 @@
   .acc-card.worn{outline:3px solid var(--mint-deep);outline-offset:-1px;}
   .acc-card.cant{opacity:.5;}
   .acc-card .worn-tag{font-size:11px;font-weight:800;color:var(--mint-deep);margin-top:2px;}
-  .takeoff{width:100%;border:none;border-radius:16px;padding:11px;margin-top:14px;cursor:pointer;
-    font-family:'Baloo 2';font-weight:800;font-size:15px;color:var(--ink-soft);background:var(--white);
-    box-shadow:0 4px 0 var(--shadow);}
-  .takeoff:active{transform:translateY(2px);}
+  /* backdrop cards */
+  .bd-card{background:var(--white);border-radius:20px;padding:8px 6px 9px;text-align:center;
+    box-shadow:0 4px 0 var(--shadow);cursor:pointer;transition:transform .08s;position:relative;}
+  .bd-card:active{transform:translateY(3px);}
+  .bd-card.worn{outline:3px solid var(--mint-deep);outline-offset:-1px;}
+  .bd-card.cant{opacity:.5;}
+  .bd-swatch{height:42px;border-radius:12px;box-shadow:inset 0 1px 3px rgba(120,80,60,.18);}
+  .bd-card .an{font-family:'Baloo 2';font-weight:700;font-size:12px;margin-top:5px;color:var(--ink);}
+  .bd-card .acost{font-size:12px;font-weight:800;color:var(--coral-deep);margin-top:2px;}
+  .bd-card .worn-tag{font-size:11px;font-weight:800;color:var(--mint-deep);margin-top:2px;}
 
   /* ---------- NAMING ---------- */
   .name-input{width:100%;border:3px solid var(--peach);border-radius:18px;padding:13px 16px;
@@ -345,6 +384,8 @@
     box-shadow:0 3px 0 var(--shadow);}
   .name-chip:active{transform:translateY(2px);}
 
+  .ver{position:absolute;bottom:3px;right:8px;font-size:9px;font-weight:700;
+    color:var(--ink-soft);opacity:.4;pointer-events:none;z-index:90;}
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.001s !important;}
   }
@@ -372,12 +413,19 @@
   <!-- STAGE -->
   <div class="stage">
     <div class="pet-name-tag" id="petNameTag"><span id="petName">Mochi</span><span class="rename-pencil">✏️</span><span class="stage-badge" id="stageBadge">Baby</span></div>
+    <div class="grow-wrap">
+      <div class="grow-bar"><div class="grow-fill" id="growFill"></div></div>
+      <div class="grow-label" id="growLabel"></div>
+    </div>
     <div class="pet-yard" id="petYard">
+      <div class="prop-layer" id="propLayer"></div>
       <div class="mood-bubble" id="moodBubble"></div>
       <div class="pet-shadow"></div>
       <div class="pet-stack" id="petStack">
-        <span class="pet-hat" id="petHat" style="display:none;"></span>
+        <span class="pet-wear pet-back" id="petBack" style="display:none;"></span>
+        <span class="pet-wear pet-hat" id="petHat" style="display:none;"></span>
         <div class="pet" id="petEl">🐱</div>
+        <span class="pet-wear pet-neck" id="petNeck" style="display:none;"></span>
       </div>
     </div>
     <div class="needs">
@@ -399,7 +447,7 @@
   <!-- NAV -->
   <div class="bottomnav">
     <button class="navbtn" id="collectionBtn"><span class="nb-icon">🐾</span>Pets</button>
-    <button class="navbtn" id="styleBtn"><span class="nb-icon">👒</span>Style</button>
+    <button class="navbtn" id="styleBtn"><span class="nb-icon">🎨</span>Decorate</button>
     <button class="navbtn" id="shopBtn"><span class="nb-icon">🥚</span>Eggs</button>
   </div>
 
@@ -409,6 +457,7 @@
   </div>
 
   <div class="toast" id="toast"></div>
+  <div class="ver">v1.5 · drag props</div>
 </div>
 
 <script>
@@ -435,18 +484,30 @@ const PETS = [
 const NEEDS = ['hunger','fun','clean','sleep'];
 
 const ACCESSORIES = [
-  {id:'bow',     emoji:'🎀', name:'Bow',      cost:20},
-  {id:'flower',  emoji:'🌸', name:'Flower',   cost:20},
-  {id:'sunflower',emoji:'🌻',name:'Sunflower',cost:25},
-  {id:'cap',     emoji:'🧢', name:'Cap',      cost:25},
-  {id:'sunhat',  emoji:'👒', name:'Sun Hat',  cost:28},
-  {id:'tophat',  emoji:'🎩', name:'Top Hat',  cost:30},
-  {id:'star',    emoji:'⭐', name:'Star',     cost:35},
-  {id:'butterfly',emoji:'🦋',name:'Butterfly',cost:35},
-  {id:'gradcap', emoji:'🎓', name:'Grad Cap', cost:40},
-  {id:'crown',   emoji:'👑', name:'Crown',    cost:50},
-  {id:'rainbow', emoji:'🌈', name:'Rainbow',  cost:60},
-  {id:'gem',     emoji:'💎', name:'Gem',      cost:70},
+  // hats (head)
+  {id:'bow',     emoji:'🎀', name:'Bow',      cost:20, slot:'hat'},
+  {id:'flower',  emoji:'🌸', name:'Flower',   cost:20, slot:'hat'},
+  {id:'sunflower',emoji:'🌻',name:'Sunflower',cost:25, slot:'hat'},
+  {id:'cap',     emoji:'🧢', name:'Cap',      cost:25, slot:'hat'},
+  {id:'sunhat',  emoji:'👒', name:'Sun Hat',  cost:28, slot:'hat'},
+  {id:'tophat',  emoji:'🎩', name:'Top Hat',  cost:30, slot:'hat'},
+  {id:'star',    emoji:'⭐', name:'Star',     cost:35, slot:'hat'},
+  {id:'butterfly',emoji:'🦋',name:'Butterfly',cost:35, slot:'hat'},
+  {id:'gradcap', emoji:'🎓', name:'Grad Cap', cost:40, slot:'hat'},
+  {id:'crown',   emoji:'👑', name:'Crown',    cost:50, slot:'hat'},
+  {id:'rainbowhat',emoji:'🌈',name:'Rainbow', cost:60, slot:'hat'},
+  {id:'gem',     emoji:'💎', name:'Gem',      cost:70, slot:'hat'},
+  // neck
+  {id:'bell',    emoji:'🔔', name:'Bell',     cost:18, slot:'neck'},
+  {id:'bowtie',  emoji:'🎀', name:'Bow Tie',  cost:22, slot:'neck'},
+  {id:'scarf',   emoji:'🧣', name:'Scarf',    cost:28, slot:'neck'},
+  {id:'beads',   emoji:'📿', name:'Beads',    cost:34, slot:'neck'},
+  {id:'medal',   emoji:'🏅', name:'Medal',    cost:40, slot:'neck'},
+  // back (wings & capes)
+  {id:'wings',   emoji:'🪽', name:'Wings',    cost:45, slot:'back'},
+  {id:'cape',    emoji:'🦸', name:'Cape',     cost:48, slot:'back'},
+  {id:'backpack',emoji:'🎒', name:'Backpack', cost:30, slot:'back'},
+  {id:'fairy',   emoji:'🧚', name:'Fairy',    cost:55, slot:'back'},
 ];
 function accById(id){ return ACCESSORIES.find(a=>a.id===id); }
 
@@ -460,7 +521,41 @@ const LOW_COLOR = 'linear-gradient(90deg,#FFB3A8,#F2674F)';
 
 const EGG_COST = 30;
 const DRAIN_PER_HOUR = 22;      // points each need drops per real hour
-const STAGE_THRESHOLDS = [0, 40, 120]; // care actions -> Baby / Kid / Grown
+// care actions -> growth stage
+const STAGES = [
+  {label:'Baby',  min:0,   scale:0.62},
+  {label:'Kid',   min:30,  scale:0.78},
+  {label:'Big',   min:80,  scale:0.92},
+  {label:'Grown', min:160, scale:1.05},
+];
+
+// wearable accessories now have a slot: hat / neck / back
+const SLOTS = ['back','hat','neck'];
+const SLOT_LABEL = {hat:'Hats', neck:'Neck', back:'Wings & Capes'};
+
+// room backdrops (gradient behind the pet)
+const BACKDROPS = [
+  {id:'default', name:'Sunny',  cost:0,  css:'linear-gradient(180deg,#FFF1E0,#FFE9DD)'},
+  {id:'garden',  name:'Garden', cost:25, css:'linear-gradient(180deg,#DFF6E3,#BCE9C5)'},
+  {id:'sky',     name:'Sky',    cost:25, css:'linear-gradient(180deg,#CFefff,#A7D8F5)'},
+  {id:'candy',   name:'Candy',  cost:30, css:'linear-gradient(180deg,#FFE0F0,#FFC9E4)'},
+  {id:'night',   name:'Night',  cost:35, css:'linear-gradient(180deg,#3B3168,#5A4B97)'},
+  {id:'beach',   name:'Beach',  cost:35, css:'linear-gradient(180deg,#FFF3C9,#FFE08A)'},
+];
+function backdropById(id){ return BACKDROPS.find(b=>b.id===id) || BACKDROPS[0]; }
+
+// room props (placed in the scene). def = default center position (% of yard).
+const PROPS = [
+  {id:'plant',   emoji:'🪴', name:'Plant',   cost:15, def:{x:12, y:82}, size:46},
+  {id:'flowerbed',emoji:'🌷',name:'Flowers', cost:15, def:{x:88, y:82}, size:42},
+  {id:'ball',    emoji:'⚽', name:'Ball',    cost:18, def:{x:26, y:86}, size:40},
+  {id:'teddy',   emoji:'🧸', name:'Teddy',   cost:22, def:{x:78, y:84}, size:46},
+  {id:'tree',    emoji:'🌳', name:'Tree',    cost:28, def:{x:13, y:74}, size:64},
+  {id:'balloon', emoji:'🎈', name:'Balloon', cost:25, def:{x:86, y:18}, size:48},
+  {id:'rainbow', emoji:'🌈', name:'Rainbow', cost:35, def:{x:50, y:12}, size:60},
+  {id:'star',    emoji:'⭐', name:'Stars',   cost:20, def:{x:16, y:18}, size:34},
+];
+function propById(id){ return PROPS.find(p=>p.id===id); }
 
 let state = null;
 
@@ -471,6 +566,11 @@ function defaultState(){
     active: 'cat',
     owned: { cat: newPet('cat') },
     accessories: [],      // owned accessory ids (account-wide)
+    backdrop: 'default',  // active room backdrop
+    backdrops: ['default'],// owned backdrops
+    props: [],            // owned room props
+    placed: [],           // props currently shown in the yard
+    propPos: {},          // per-prop custom position {id:{x,y}}
     lastSeen: Date.now(),
     streak: 0,
     lastGift: 0,          // day-stamp of last claimed gift
@@ -478,7 +578,8 @@ function defaultState(){
     seenIntro: false
   };
 }
-function newPet(id){ return { hunger:80, fun:80, clean:80, sleep:80, care:0, hat:null, customName:null }; }
+function newPet(id){ return { hunger:80, fun:80, clean:80, sleep:80, care:0, customName:null,
+  worn:{hat:null, neck:null, back:null} }; }
 
 // pet's display name: custom if named, else default
 function petLabel(id){
@@ -490,10 +591,24 @@ function petLabel(id){
 // fill in any missing fields on older saves
 function migrate(){
   if(!state.accessories) state.accessories = [];
+  // the old 'rainbow' hat id was renamed to 'rainbowhat'
+  state.accessories = state.accessories.map(a=> a==='rainbow' ? 'rainbowhat' : a);
+  if(!state.backdrop) state.backdrop = 'default';
+  if(!state.backdrops) state.backdrops = ['default'];
+  if(!state.backdrops.includes('default')) state.backdrops.unshift('default');
+  if(!state.props) state.props = [];
+  if(!state.placed) state.placed = [];
+  if(!state.propPos) state.propPos = {};
   for(const id in state.owned){
     const o = state.owned[id];
-    if(o.hat === undefined) o.hat = null;
     if(o.customName === undefined) o.customName = null;
+    if(!o.worn){
+      // migrate old single-hat model into slot model
+      let oldHat = o.hat || null;
+      if(oldHat === 'rainbow') oldHat = 'rainbowhat';
+      o.worn = {hat:oldHat, neck:null, back:null};
+      delete o.hat;
+    }
   }
 }
 
@@ -558,10 +673,19 @@ function applyDrain(){
 function pet(){ return PETS.find(p=>p.id===state.active); }
 function petState(){ return state.owned[state.active]; }
 function stageOf(care){
-  if(care >= STAGE_THRESHOLDS[2]) return {label:'Grown', scale:1.0};
-  if(care >= STAGE_THRESHOLDS[1]) return {label:'Kid', scale:0.85};
-  return {label:'Baby', scale:0.72};
+  let s = STAGES[0], idx = 0;
+  for(let i=0;i<STAGES.length;i++){ if(care >= STAGES[i].min){ s = STAGES[i]; idx = i; } }
+  // progress toward next stage (0..1), and care needed
+  let progress = 1, toNext = 0, nextLabel = null;
+  if(idx < STAGES.length-1){
+    const cur = STAGES[idx].min, nxt = STAGES[idx+1].min;
+    progress = (care - cur) / (nxt - cur);
+    toNext = nxt - care;
+    nextLabel = STAGES[idx+1].label;
+  }
+  return {label:s.label, scale:s.scale, index:idx, progress, toNext, nextLabel};
 }
+function stageIndex(care){ return stageOf(care).index; }
 
 function render(){
   document.getElementById('heartCount').textContent = state.hearts;
@@ -574,16 +698,29 @@ function render(){
   petEl.textContent = p.emoji;
   petEl.style.fontSize = petPx+'px';
 
-  // hat / accessory on the pet
-  const hatEl = document.getElementById('petHat');
-  if(ps.hat){
-    const acc = accById(ps.hat);
-    hatEl.textContent = acc ? acc.emoji : '';
-    hatEl.style.fontSize = (petPx*0.42)+'px';
-    hatEl.style.display = '';
-  } else {
-    hatEl.style.display = 'none';
+  // growth progress bar
+  const gfill = document.getElementById('growFill');
+  const glabel = document.getElementById('growLabel');
+  if(gfill){
+    if(st.nextLabel){
+      gfill.style.width = Math.round(st.progress*100)+'%';
+      glabel.textContent = `🌱 ${st.toNext} more to grow into ${st.nextLabel}`;
+    } else {
+      gfill.style.width = '100%';
+      glabel.textContent = '🌟 Fully grown!';
+    }
   }
+
+  // wearables by slot
+  renderSlot('petBack', ps.worn.back, petPx, 1.28);
+  renderSlot('petHat',  ps.worn.hat,  petPx, 0.42);
+  renderSlot('petNeck', ps.worn.neck, petPx, 0.34);
+
+  // room backdrop
+  document.getElementById('app').style.background = backdropById(state.backdrop).css;
+
+  // room props
+  renderProps();
 
   NEEDS.forEach(n=>{
     const f = document.getElementById('fill-'+n);
@@ -608,6 +745,68 @@ function render(){
   } else if(dot){ dot.remove(); }
 }
 
+function renderSlot(elId, accId, petPx, ratio){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  if(accId){
+    const acc = accById(accId);
+    el.textContent = acc ? acc.emoji : '';
+    el.style.fontSize = (petPx*ratio)+'px';
+    el.style.display = '';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+let propDragging = false;
+function renderProps(){
+  if(propDragging) return;   // don't rebuild mid-drag
+  const layer = document.getElementById('propLayer');
+  if(!layer) return;
+  layer.innerHTML = state.placed.map(id=>{
+    const pr = propById(id); if(!pr) return '';
+    const pos = state.propPos[id] || pr.def;
+    return `<span class="prop" data-prop="${id}" style="left:${pos.x}%;top:${pos.y}%;font-size:${pr.size}px;">${pr.emoji}</span>`;
+  }).join('');
+  layer.querySelectorAll('.prop').forEach(attachPropDrag);
+}
+
+function attachPropDrag(el){
+  const id = el.dataset.prop;
+  let pos = null;
+  function down(e){
+    propDragging = true;
+    document.getElementById('propLayer').classList.add('lift');
+    try{ el.setPointerCapture(e.pointerId); }catch(_){}
+    el.classList.add('dragging');
+    SND.tap();
+    e.preventDefault();
+  }
+  function move(e){
+    if(!propDragging) return;
+    const yard = document.getElementById('petYard').getBoundingClientRect();
+    let x = ((e.clientX - yard.left) / yard.width) * 100;
+    let y = ((e.clientY - yard.top) / yard.height) * 100;
+    x = Math.max(6, Math.min(94, x));
+    y = Math.max(6, Math.min(94, y));
+    pos = {x, y};
+    el.style.left = x + '%';
+    el.style.top = y + '%';
+    e.preventDefault();
+  }
+  function up(){
+    if(!propDragging) return;
+    propDragging = false;
+    document.getElementById('propLayer').classList.remove('lift');
+    el.classList.remove('dragging');
+    if(pos){ state.propPos[id] = pos; save(); }
+  }
+  el.addEventListener('pointerdown', down);
+  el.addEventListener('pointermove', move);
+  el.addEventListener('pointerup', up);
+  el.addEventListener('pointercancel', up);
+}
+
 function lockedCount(){ return PETS.filter(p=>!state.owned[p.id]).length; }
 
 /* ---------- CARE ACTIONS ---------- */
@@ -628,6 +827,7 @@ const MOODS = {
 function doCare(need){
   const ps = petState();
   if(ps[need] >= 100){ showMood('All good! 😊'); return; }
+  const beforeStage = stageIndex(ps.care);
   ps[need] = Math.min(100, ps[need] + 28);
   ps.care += 1;
   SND[need]();
@@ -653,6 +853,26 @@ function doCare(need){
   addHearts(earned);
   render();
   save();
+
+  // growth celebration if a stage was crossed
+  if(stageIndex(ps.care) > beforeStage) celebrateGrowth();
+}
+
+// pet just advanced a growth stage
+function celebrateGrowth(){
+  const ps = petState();
+  const st = stageOf(ps.care);
+  SND.hatch(); confetti(28);
+  addHearts(5);                       // growth reward
+  const petStack = document.getElementById('petStack');
+  petStack.classList.remove('growpop'); void petStack.offsetWidth; petStack.classList.add('growpop');
+  openSheet(`
+    <div class="reveal-pet">${pet().emoji}</div>
+    <h2>${petLabel(state.active)} grew up! 🎉</h2>
+    <div class="sub">Now a <b>${st.label}</b>! Here's +💖5</div>
+    <button class="big-btn mint" id="growOk">Yay!</button>
+  `);
+  document.getElementById('growOk').addEventListener('click',()=>{ closeSheet(); render(); save(); });
 }
 
 function bounceePet(){
@@ -728,7 +948,8 @@ function openCollection(){
     const ps=state.owned[p.id];
     const st=stageOf(ps.care);
     const isActive = state.active===p.id;
-    const hatMark = ps.hat ? ` ${accById(ps.hat).emoji}` : '';
+    const wornEmojis = ['hat','neck','back'].map(s=>ps.worn&&ps.worn[s]?accById(ps.worn[s]).emoji:'').join('');
+    const hatMark = wornEmojis ? ` ${wornEmojis}` : '';
     return `<div class="col-card ${isActive?'active-pet':''}" data-pick="${p.id}">
       <span class="lvl">${st.label}</span>
       <button class="card-rename" data-rename="${p.id}">✏️</button>
@@ -890,48 +1111,70 @@ function openRename(petId){
   });
 }
 
-/* ---------- STYLE SHOP (hats & accessories) ---------- */
-function openStyleShop(){
+/* ---------- DECORATE SHOP (Pet wearables + Room) ---------- */
+let decorTab = 'pet';
+function openStyleShop(tab){
+  if(tab) decorTab = tab;
   SND.tap();
+  if(decorTab === 'room') return openRoomTab();
+  return openPetTab();
+}
+
+function tabsHtml(active){
+  return `<div class="dtabs">
+    <button class="dtab ${active==='pet'?'on':''}" data-tab="pet">🐾 Pet</button>
+    <button class="dtab ${active==='room'?'on':''}" data-tab="room">🏡 Room</button>
+  </div>`;
+}
+function wireTabs(){
+  sheet.querySelectorAll('.dtab').forEach(t=>{
+    t.addEventListener('click',()=>{ SND.tap(); openStyleShop(t.dataset.tab); });
+  });
+}
+
+function openPetTab(){
   const p = pet(), ps = petState();
-  const wornEmoji = ps.hat ? accById(ps.hat).emoji : '';
-  const cards = ACCESSORIES.map(a=>{
-    const owned = state.accessories.includes(a.id);
-    const worn = ps.hat === a.id;
-    const canAfford = state.hearts >= a.cost;
-    let cls = 'acc-card';
-    if(owned) cls += ' owned';
-    if(worn) cls += ' worn';
-    if(!owned && !canAfford) cls += ' cant';
-    let bottom;
-    if(worn) bottom = `<div class="worn-tag">✓ Wearing</div>`;
-    else if(owned) bottom = `<div class="worn-tag">Tap to wear</div>`;
-    else bottom = `<div class="acost">💖${a.cost}</div>`;
-    return `<div class="${cls}" data-acc="${a.id}">
-      <div class="ae">${a.emoji}</div>
-      <div class="an">${a.name}</div>
-      ${bottom}
+  // build preview emoji stack
+  const preview = `
+    <div class="preview-pet">
+      ${ps.worn.back?`<span class="pv pv-back">${accById(ps.worn.back).emoji}</span>`:''}
+      ${ps.worn.hat?`<span class="pv pv-hat">${accById(ps.worn.hat).emoji}</span>`:''}
+      <span class="pv-pet">${p.emoji}</span>
+      ${ps.worn.neck?`<span class="pv pv-neck">${accById(ps.worn.neck).emoji}</span>`:''}
     </div>`;
-  }).join('');
+
+  // grouped by slot
+  let groups = '';
+  SLOTS.forEach(slot=>{
+    const items = ACCESSORIES.filter(a=>a.slot===slot);
+    const cards = items.map(a=>{
+      const owned = state.accessories.includes(a.id);
+      const worn = ps.worn[slot] === a.id;
+      const canAfford = state.hearts >= a.cost;
+      let cls = 'acc-card';
+      if(owned) cls += ' owned';
+      if(worn) cls += ' worn';
+      if(!owned && !canAfford) cls += ' cant';
+      let bottom = worn ? `<div class="worn-tag">✓ On</div>`
+                 : owned ? `<div class="worn-tag">Tap to wear</div>`
+                 : `<div class="acost">💖${a.cost}</div>`;
+      return `<div class="${cls}" data-acc="${a.id}">
+        <div class="ae">${a.emoji}</div><div class="an">${a.name}</div>${bottom}</div>`;
+    }).join('');
+    groups += `<div class="slot-title">${SLOT_LABEL[slot]}</div><div class="acc-grid">${cards}</div>`;
+  });
 
   openSheet(`
     <button class="close-x" onclick="closeSheet()">✕</button>
-    <h2>Style Shop 👒</h2>
+    <h2>Decorate 🎨</h2>
+    ${tabsHtml('pet')}
     <div class="sub">Dress up ${petLabel(state.active)}!</div>
-    <div class="preview-pet" id="previewPet">
-      <span class="preview-hat" id="previewHat" style="${wornEmoji?'':'display:none;'}">${wornEmoji}</span>
-      ${p.emoji}
-    </div>
-    <div class="acc-grid" id="accGrid">${cards}</div>
-    <button class="takeoff" id="takeoffBtn" style="${ps.hat?'':'display:none;'}">Take it off</button>
+    ${preview}
+    ${groups}
   `);
-
-  document.getElementById('accGrid').querySelectorAll('[data-acc]').forEach(card=>{
+  wireTabs();
+  sheet.querySelectorAll('[data-acc]').forEach(card=>{
     card.addEventListener('click',()=>handleAccTap(card.dataset.acc));
-  });
-  const off = document.getElementById('takeoffBtn');
-  if(off) off.addEventListener('click',()=>{
-    petState().hat = null; SND.tap(); save(); render(); openStyleShop();
   });
 }
 
@@ -940,23 +1183,101 @@ function handleAccTap(id){
   const ps = petState();
   const owned = state.accessories.includes(id);
   if(owned){
-    // toggle wear
-    if(ps.hat === id){ ps.hat = null; SND.tap(); }
-    else { ps.hat = id; SND.coin(); }
-    save(); render(); openStyleShop();
+    if(ps.worn[a.slot] === id){ ps.worn[a.slot] = null; SND.tap(); }
+    else { ps.worn[a.slot] = id; SND.coin(); }
+    save(); render(); openPetTab();
   } else {
-    // try to buy
-    if(state.hearts < a.cost){
-      SND.nono();
-      toast('Need 💖'+a.cost+' for '+a.name);
-      return;
-    }
+    if(state.hearts < a.cost){ SND.nono(); toast('Need 💖'+a.cost+' for '+a.name); return; }
     state.hearts -= a.cost;
     state.accessories.push(id);
-    ps.hat = id;                 // auto-wear what you just bought
+    ps.worn[a.slot] = id;        // auto-wear
     SND.happy(); confetti(14);
-    save(); render(); openStyleShop();
+    save(); render(); openPetTab();
     toast(a.name+' on! 💖');
+  }
+}
+
+function openRoomTab(){
+  // backdrops
+  const bdCards = BACKDROPS.map(b=>{
+    const owned = state.backdrops.includes(b.id);
+    const active = state.backdrop === b.id;
+    const canAfford = state.hearts >= b.cost;
+    let cls = 'bd-card';
+    if(active) cls += ' worn';
+    if(!owned && !canAfford) cls += ' cant';
+    let bottom = active ? `<div class="worn-tag">✓ On</div>`
+               : owned ? `<div class="worn-tag">Tap to use</div>`
+               : `<div class="acost">💖${b.cost}</div>`;
+    return `<div class="${cls}" data-bd="${b.id}">
+      <div class="bd-swatch" style="background:${b.css}"></div>
+      <div class="an">${b.name}</div>${bottom}</div>`;
+  }).join('');
+
+  // props
+  const propCards = PROPS.map(pr=>{
+    const owned = state.props.includes(pr.id);
+    const placed = state.placed.includes(pr.id);
+    const canAfford = state.hearts >= pr.cost;
+    let cls = 'acc-card';
+    if(placed) cls += ' worn';
+    if(!owned && !canAfford) cls += ' cant';
+    let bottom = placed ? `<div class="worn-tag">✓ Placed</div>`
+               : owned ? `<div class="worn-tag">Tap to place</div>`
+               : `<div class="acost">💖${pr.cost}</div>`;
+    return `<div class="${cls}" data-prop="${pr.id}">
+      <div class="ae">${pr.emoji}</div><div class="an">${pr.name}</div>${bottom}</div>`;
+  }).join('');
+
+  openSheet(`
+    <button class="close-x" onclick="closeSheet()">✕</button>
+    <h2>Decorate 🎨</h2>
+    ${tabsHtml('room')}
+    <div class="slot-title">Backdrops</div>
+    <div class="acc-grid bd-grid">${bdCards}</div>
+    <div class="slot-title">Props</div>
+    <div class="sub" style="margin:0 0 10px;">Place them around your pet</div>
+    <div class="acc-grid">${propCards}</div>
+  `);
+  wireTabs();
+  sheet.querySelectorAll('[data-bd]').forEach(c=>c.addEventListener('click',()=>handleBackdropTap(c.dataset.bd)));
+  sheet.querySelectorAll('[data-prop]').forEach(c=>c.addEventListener('click',()=>handlePropTap(c.dataset.prop)));
+}
+
+function handleBackdropTap(id){
+  const b = backdropById(id);
+  const owned = state.backdrops.includes(id);
+  if(owned){
+    state.backdrop = id; SND.coin();
+    save(); render(); openRoomTab();
+  } else {
+    if(state.hearts < b.cost){ SND.nono(); toast('Need 💖'+b.cost+' for '+b.name); return; }
+    state.hearts -= b.cost;
+    state.backdrops.push(id);
+    state.backdrop = id;
+    SND.happy(); confetti(14);
+    save(); render(); openRoomTab();
+    toast(b.name+' backdrop! 💖');
+  }
+}
+
+function handlePropTap(id){
+  const pr = propById(id);
+  const owned = state.props.includes(id);
+  if(owned){
+    // toggle placed
+    if(state.placed.includes(id)){ state.placed = state.placed.filter(x=>x!==id); SND.tap(); }
+    else { state.placed.push(id); if(!state.propPos[id]) state.propPos[id]={...pr.def}; SND.coin(); }
+    save(); render(); openRoomTab();
+  } else {
+    if(state.hearts < pr.cost){ SND.nono(); toast('Need 💖'+pr.cost+' for '+pr.name); return; }
+    state.hearts -= pr.cost;
+    state.props.push(id);
+    state.placed.push(id);       // auto-place
+    state.propPos[id] = {...pr.def};
+    SND.happy(); confetti(14);
+    save(); render(); openRoomTab();
+    toast('Placed! Drag it where you like ✋');
   }
 }
 
@@ -1084,8 +1405,10 @@ function tapFood(btn){
 
 function endFeedGame(){
   const ps = petState();
+  const beforeStage = stageIndex(ps.care);
   ps.hunger = 100;          // belly full
   ps.care += 3;             // counts toward growth
+  const grew = stageIndex(ps.care) > beforeStage;
   const bonus = 3;          // full-belly bonus
   const total = fg.hearts + bonus;
 
@@ -1102,7 +1425,7 @@ function endFeedGame(){
     if(NEEDS.every(n=>ps[n]>=70) && !ps._wasHappy){ ps._wasHappy=true; }
     SND.coin();
     save(); render(); closeSheet();
-    welcomePet();
+    if(grew) celebrateGrowth(); else welcomePet();
   });
   save();
 }
@@ -1144,7 +1467,7 @@ document.getElementById('petEl').addEventListener('click',()=>{
 });
 document.getElementById('collectionBtn').addEventListener('click',openCollection);
 document.getElementById('petNameTag').addEventListener('click',()=>openRename(state.active));
-document.getElementById('styleBtn').addEventListener('click',openStyleShop);
+document.getElementById('styleBtn').addEventListener('click',()=>openStyleShop('pet'));
 document.getElementById('shopBtn').addEventListener('click',openShop);
 document.getElementById('soundBtn').addEventListener('click',()=>{
   state.sound=!state.sound;
